@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Erika 日語課筆記</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ════════════════════════════════════════
+   TOKEN SYSTEM
+   ════════════════════════════════════════ */
+:root {
+  --bg:          #F4F0E6;
+  --surface:     #FDFAF3;
+  --surface2:    #EDE8D4;
+  --border:      #DDD6C2;
+  --text:        #1B1814;
+  --text-sub:    #6B6355;
+  --text-hint:   #A09587;
+
+  /* section colors */
+  --vocab-bg:    #EBF0FB; --vocab-fg:  #2E5FA3; --vocab-bar: #2E5FA3;
+  --gram-bg:     #E8F3EC; --gram-fg:   #2E6644; --gram-bar:  #3A7A52;
+  --phrase-bg:   #FBF3E4; --phrase-fg: #8C5A1C; --phrase-bar:#B07430;
+  --ext-bg:      #F2EBF5; --ext-fg:    #5C3A7A; --ext-bar:   #7A4FA3;
+  --fb-bg:       #EAEDDB; --fb-fg:     #3A4E18; --fb-bar:    #5A7028;
+  --hw-bg:       #E8F2F5; --hw-fg:     #1A4C5A; --hw-bar:    #2A7090;
+
+  --tab-ink:     #2E5FA3;
+  --tag-r:       4px;
+  --card-r:      10px;
+  --accord-r:    8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #16130E; --surface:   #211E17; --surface2:  #2A2620; --border: #3A3528;
+    --text:      #EDE9DF; --text-sub:  #AFA799; --text-hint: #6E6457;
+    --vocab-bg:  #1A2640; --vocab-fg:  #7AAEE8; --vocab-bar: #5A92D4;
+    --gram-bg:   #162A1E; --gram-fg:   #72C48A; --gram-bar:  #5AAF74;
+    --phrase-bg: #2A1E0A; --phrase-fg: #E0A85A; --phrase-bar:#CC8A3A;
+    --ext-bg:    #1E1228; --ext-fg:    #B890E0; --ext-bar:   #9E6EC8;
+    --fb-bg:     #1C2210; --fb-fg:     #B0C870; --fb-bar:    #7A9E38;
+    --hw-bg:     #0E2028; --hw-fg:     #70C0D8; --hw-bar:    #3A90B0;
+    --tab-ink:   #7AAEE8;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #16130E; --surface:   #211E17; --surface2:  #2A2620; --border: #3A3528;
+  --text:      #EDE9DF; --text-sub:  #AFA799; --text-hint: #6E6457;
+  --vocab-bg:  #1A2640; --vocab-fg:  #7AAEE8; --vocab-bar: #5A92D4;
+  --gram-bg:   #162A1E; --gram-fg:   #72C48A; --gram-bar:  #5AAF74;
+  --phrase-bg: #2A1E0A; --phrase-fg: #E0A85A; --phrase-bar:#CC8A3A;
+  --ext-bg:    #1E1228; --ext-fg:    #B890E0; --ext-bar:   #9E6EC8;
+  --fb-bg:     #1C2210; --fb-fg:     #B0C870; --fb-bar:    #7A9E38;
+  --hw-bg:     #0E2028; --hw-fg:     #70C0D8; --hw-bar:    #3A90B0;
+  --tab-ink:   #7AAEE8;
+}
+
+/* ════════════════════════════════════════
+   BASE
+   ════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding-inline: 20px;
+  padding-block: 28px 64px;
+  min-height: 100vh;
+  line-height: 1.7;
+}
+
+/* ════════════════════════════════════════
+   PAGE HEADER
+   ════════════════════════════════════════ */
+.page-header {
+  max-width: 860px;
+  margin: 0 auto 28px;
+}
+.page-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-hint);
+  margin-bottom: 8px;
+}
+.page-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(22px, 4vw, 36px);
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.page-title em { color: var(--tab-ink); font-style: normal; }
+.page-meta { margin-top: 8px; font-size: 13px; color: var(--text-sub); }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-sub);
+}
+.legend-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+/* ════════════════════════════════════════
+   LESSON SELECTOR (dropdown nav)
+   ════════════════════════════════════════ */
+.tabs-wrapper { max-width: 860px; margin: 0 auto; }
+
+.lesson-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.lesson-nav-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-hint);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.lesson-select-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+  max-width: 460px;
+}
+
+.lesson-select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 40px 10px 14px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.16s;
+}
+
+.lesson-select:focus,
+.lesson-select:hover {
+  border-color: var(--tab-ink);
+}
+
+/* custom chevron */
+.lesson-select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--text-hint);
+  pointer-events: none;
+}
+
+.lesson-counter {
+  font-size: 12px;
+  color: var(--text-hint);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.lesson-counter strong { color: var(--tab-ink); font-variant-numeric: tabular-nums; }
+
+/* ════════════════════════════════════════
+   LESSON PANELS
+   ════════════════════════════════════════ */
+.lesson-panel { display: none; }
+.lesson-panel.active { display: block; }
+
+.lesson-theme {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+.lesson-desc { font-size: 13px; color: var(--text-sub); margin-bottom: 20px; }
+
+/* ════════════════════════════════════════
+   ACCORDION SECTIONS
+   ════════════════════════════════════════ */
+.accord {
+  border: 1px solid var(--border);
+  border-radius: var(--accord-r);
+  margin-bottom: 10px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.accord summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  border-left: 4px solid transparent;
+}
+.accord summary::-webkit-details-marker { display: none; }
+
+.accord[open] summary { border-bottom: 1px solid var(--border); }
+
+/* color themes per section type */
+.accord.vocab   summary { border-left-color: var(--vocab-bar); }
+.accord.gram    summary { border-left-color: var(--gram-bar);  }
+.accord.phrase  summary { border-left-color: var(--phrase-bar);}
+.accord.ext     summary { border-left-color: var(--ext-bar);   }
+.accord.fb      summary { border-left-color: var(--fb-bar);    }
+.accord.hw      summary { border-left-color: var(--hw-bar);    }
+
+.sec-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.sec-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  flex: 1;
+}
+.accord.vocab  .sec-label { color: var(--vocab-bar); }
+.accord.gram   .sec-label { color: var(--gram-bar);  }
+.accord.phrase .sec-label { color: var(--phrase-bar);}
+.accord.ext    .sec-label { color: var(--ext-bar);   }
+.accord.fb     .sec-label { color: var(--fb-bar);    }
+.accord.hw     .sec-label { color: var(--hw-bar);    }
+
+.accord-chevron {
+  font-size: 11px;
+  color: var(--text-hint);
+  transition: transform 0.2s;
+}
+.accord[open] .accord-chevron { transform: rotate(90deg); }
+
+.accord-body { padding: 16px 18px 18px; }
+
+/* ════════════════════════════════════════
+   VOCAB ITEMS
+   ════════════════════════════════════════ */
+.vocab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+.v-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  background: var(--vocab-bg);
+  border-radius: 6px;
+}
+.v-jp   { font-family: 'Noto Serif JP', serif; font-size: 15px; font-weight: 600; color: var(--vocab-fg); line-height: 1.35; }
+.v-read { font-size: 11px; color: var(--text-hint); }
+.v-def  { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+
+/* ════════════════════════════════════════
+   GRAMMAR ITEMS
+   ════════════════════════════════════════ */
+.gram-list { display: flex; flex-direction: column; gap: 16px; }
+.g-item { border-left: 3px solid var(--gram-bar); padding-left: 12px; }
+.g-pattern { font-family: 'Noto Serif JP', serif; font-size: 14px; font-weight: 600; color: var(--gram-fg); margin-bottom: 3px; }
+.g-meaning  { font-size: 12px; color: var(--text-sub); margin-bottom: 6px; }
+.g-example  { font-size: 13px; background: var(--gram-bg); padding: 8px 12px; border-radius: 5px; line-height: 1.6; }
+.g-en       { font-size: 11px; color: var(--text-hint); margin-top: 3px; }
+
+/* ════════════════════════════════════════
+   PHRASE ITEMS
+   ════════════════════════════════════════ */
+.phrase-list { display: flex; flex-direction: column; gap: 8px; }
+.p-item { padding: 10px 14px; background: var(--phrase-bg); border-radius: 6px; }
+.p-jp   { font-family: 'Noto Serif JP', serif; font-size: 14px; font-weight: 600; color: var(--phrase-fg); margin-bottom: 2px; }
+.p-note { font-size: 12px; color: var(--text-sub); }
+
+/* ════════════════════════════════════════
+   EXTENDED / CULTURAL
+   ════════════════════════════════════════ */
+.ext-list { display: flex; flex-direction: column; gap: 8px; }
+.e-item { padding: 10px 14px; background: var(--ext-bg); border-radius: 6px; }
+.e-title { font-size: 13px; font-weight: 700; color: var(--ext-fg); margin-bottom: 3px; }
+.e-body  { font-size: 12px; color: var(--text-sub); line-height: 1.65; }
+
+/* ════════════════════════════════════════
+   TEACHER FEEDBACK
+   ════════════════════════════════════════ */
+.fb-list { display: flex; flex-direction: column; gap: 10px; }
+.fb-block { background: var(--fb-bg); border-radius: 6px; padding: 12px 14px; }
+.fb-head  { font-size: 12px; font-weight: 700; color: var(--fb-fg); margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
+.fb-body  { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+.fb-body li { margin-left: 16px; margin-top: 3px; }
+
+/* ════════════════════════════════════════
+   HOMEWORK
+   ════════════════════════════════════════ */
+.hw-list { display: flex; flex-direction: column; gap: 8px; }
+.hw-item { background: var(--hw-bg); border-radius: 6px; padding: 10px 14px; }
+.hw-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--hw-fg); margin-bottom: 4px; }
+.hw-body  { font-size: 13px; color: var(--text-sub); line-height: 1.65; }
+.hw-ex    { font-family: 'Noto Serif JP', serif; font-size: 13px; background: var(--surface2); border-radius: 4px; padding: 6px 10px; margin-top: 6px; color: var(--text); }
+
+/* slang box */
+.slang-box { background: var(--phrase-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.slang-word { font-family: 'Noto Serif JP', serif; font-size: 22px; font-weight: 700; color: var(--phrase-bar); margin-bottom: 4px; }
+.slang-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.slang-chip { font-size: 12px; padding: 3px 10px; border-radius: 20px; background: var(--surface2); color: var(--text-sub); border: 1px solid var(--border); }
+
+/* section divider */
+.sdivider { height: 1px; background: var(--border); margin: 10px 0; }
+
+/* responsive */
+@media (max-width: 580px) {
+  .vocab-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 360px) {
+  .vocab-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     PAGE HEADER
+     ════════════════════════════════════════ -->
+<div class="page-header">
+  <div class="page-eyebrow">日語課 · Erika 老師</div>
+  <h1 class="page-title">Erika 日語課<em>筆記まとめ</em></h1>
+  <div class="page-meta">115年 8月26日 ～ 現在 ｜ 毎回更新中</div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--fb-bar)"></div>老師反饋</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--vocab-bar)"></div>単語</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--gram-bar)"></div>文法</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--phrase-bar)"></div>口說フレーズ</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ext-bar)"></div>延伸・文化</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--hw-bar)"></div>課後作業</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     LESSON SELECTOR
+     新增課程：在 <select> 裡複製一個 <option> 並將 value 改成下一個數字
+     ════════════════════════════════════════ -->
+<div class="tabs-wrapper">
+<nav class="lesson-nav" aria-label="課程選擇">
+  <span class="lesson-nav-label">選擇課程</span>
+  <div class="lesson-select-wrap">
+    <select class="lesson-select" id="lessonSelect" onchange="switchLesson(this.value)">
+      <option value="0">第1回 ― 8月26日　自己紹介・基礎</option>
+      <option value="1">第2回 ― 8月31日　時間・駅・ホテル</option>
+      <option value="2">第3回 ― 9月3日　　交通・食べ物・旅行</option>
+      <option value="3">第4回 ― 9月7日　　日常・家族・体験</option>
+      <option value="4">第5回 ― 9月10日　車・交通・スラング</option>
+      <!-- ▼ 複製上方 <option> 新增下一堂課，value 從 5 開始遞增 ▼ -->
+    </select>
+  </div>
+  <span class="lesson-counter">共 <strong id="totalCount">5</strong> 回</span>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════════
+     LESSON 1 — 115.08.26
+     ════════════════════════════════════════════════════════════ -->
+<div class="lesson-panel active">
+  <div class="lesson-theme">第1回 ― 自己紹介・日本語学習の目標</div>
+  <div class="lesson-desc">初回レッスン。自分のレベルや学習目標を日本語で伝える練習。</div>
+
+  <!-- 老師反饋 -->
+  <details class="accord fb" open>
+    <summary><span class="sec-icon">📋</span><span class="sec-label">老師反饋</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="fb-list">
+        <div class="fb-block">
+          <div class="fb-head">🔧 改善重點</div>
+          <div class="fb-body">
+            <ul>
+              <li><strong>単語→完整句子</strong>：目前常用單字堆疊，需補上助詞（〜で、〜へ、〜を）和動詞活用（〜ています、〜てあります）</li>
+              <li><strong>助数詞定著</strong>：枚、人、個等計數詞要反應更快速、正確</li>
+              <li><strong>接続詞・描寫表達</strong>：需要練習順序說明、加上理由、拉長句子的能力</li>
+            </ul>
+          </div>
+        </div>
+        <div class="fb-block">
+          <div class="fb-head">📚 授業方針（老師的課程設計）</div>
+          <div class="fb-body">
+            <ul>
+              <li>每次用照片/插圖提問（「誰がいますか？」「何をしていますか？」）</li>
+              <li>先用單字回答 → 老師補助詞和文法 → 即時打在 Chat → 跟讀・定著</li>
+              <li>保留充分思考時間（Wait Time），不催促，讓自己完成句子</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 単語 -->
+  <details class="accord vocab" open>
+    <summary><span class="sec-icon">📖</span><span class="sec-label">単語</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="vocab-grid">
+        <div class="v-item"><div class="v-jp">5泊6日</div><div class="v-read">ごはく むいか</div><div class="v-def">5晚6天（旅行天數說法）</div></div>
+        <div class="v-item"><div class="v-jp">ふたり ／ さんにん</div><div class="v-read">二人 ／ 三人</div><div class="v-def">2人 ／ 3人</div></div>
+        <div class="v-item"><div class="v-jp">大人</div><div class="v-read">おとな</div><div class="v-def">大人、成人</div></div>
+        <div class="v-item"><div class="v-jp">後ろ</div><div class="v-read">うしろ</div><div class="v-def">後面、後方</div></div>
+        <div class="v-item"><div class="v-jp">中級</div><div class="v-read">ちゅうきゅう</div><div class="v-def">中級程度</div></div>
+        <div class="v-item"><div class="v-jp">文法</div><div class="v-read">ぶんぽう</div><div class="v-def">Grammar 文法</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 文法 -->
+  <details class="accord gram" open>
+    <summary><span class="sec-icon">✏️</span><span class="sec-label">文法</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="gram-list">
+        <div class="g-item">
+          <div class="g-pattern">〜ことが むずかしい</div>
+          <div class="g-meaning">做〜是困難的</div>
+          <div class="g-example">話すことがむずかしい。</div>
+          <div class="g-en">Speaking is difficult.</div>
+        </div>
+        <div class="g-item">
+          <div class="g-pattern">簡単な〜なら 〜できます</div>
+          <div class="g-meaning">如果是簡單的〜，就能〜</div>
+          <div class="g-example">簡単な日本語なら聞き取れます。</div>
+          <div class="g-en">If it's simple Japanese, I can understand it.</div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 口說フレーズ -->
+  <details class="accord phrase" open>
+    <summary><span class="sec-icon">💬</span><span class="sec-label">口說フレーズ</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="phrase-list">
+        <div class="p-item">
+          <div class="p-jp">気になることがあります。</div>
+          <div class="p-note">有想問的問題。（気になること ＝ 聞きたいこと ＝ 質問）</div>
+        </div>
+        <div class="p-item">
+          <div class="p-jp">旅行する時に色々な人と沢山話せるようになりたいです。</div>
+          <div class="p-note">我希望旅行時能和很多不同的人交談。（學習目標句型）</div>
+        </div>
+        <div class="p-item">
+          <div class="p-jp">会話をする ＝ 話したい</div>
+          <div class="p-note">表達「想對話」的兩種說法</div>
+        </div>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     LESSON 2 — 115.08.31
+     ════════════════════════════════════════════════════════════ -->
+<div class="lesson-panel">
+  <div class="lesson-theme">第2回 ― 時間表現・駅・ホテル・日常生活</div>
+  <div class="lesson-desc">時刻・場所の描写、ホテルチェックインシーン、生活リズムのフリートーク。</div>
+
+  <!-- 老師反饋 -->
+  <details class="accord fb" open>
+    <summary><span class="sec-icon">📋</span><span class="sec-label">老師反饋</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="fb-list">
+        <div class="fb-block">
+          <div class="fb-head">📝 今回のレッスン内容</div>
+          <div class="fb-body">
+            <ul>
+              <li><strong>日常会話フリートーク</strong>：近況報告（仕事の場所・時間）、台湾と日本のコンビニお弁当事情</li>
+              <li><strong>イラスト描写練習</strong>：「駅のホーム」「ホテルの受付」の画像を見ながら日本語で状況を説明</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 単語 -->
+  <details class="accord vocab" open>
+    <summary><span class="sec-icon">📖</span><span class="sec-label">単語</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="vocab-grid">
+        <div class="v-item"><div class="v-jp">券売機</div><div class="v-read">けんばいき</div><div class="v-def">自動售票機</div></div>
+        <div class="v-item"><div class="v-jp">切符</div><div class="v-read">きっぷ</div><div class="v-def">車票</div></div>
+        <div class="v-item"><div class="v-jp">ホーム</div><div class="v-read">ほーむ</div><div class="v-def">月台 platform</div></div>
+        <div class="v-item"><div class="v-jp">受付</div><div class="v-read">うけつけ</div><div class="v-def">接待處、前台</div></div>
+        <div class="v-item"><div class="v-jp">チェックイン業務</div><div class="v-read">ぎょうむ</div><div class="v-def">辦理入住手續</div></div>
+        <div class="v-item"><div class="v-jp">鍵を渡す</div><div class="v-read">かぎをわたす</div><div class="v-def">交鑰匙</div></div>
+        <div class="v-item"><div class="v-jp">案内をする</div><div class="v-read">あんない</div><div class="v-def">引導、介紹</div></div>
+        <div class="v-item"><div class="v-jp">カウンター</div><div class="v-read">受付の机</div><div class="v-def">服務台</div></div>
+        <div class="v-item"><div class="v-jp">体力・単語力・会話力・文章力</div><div class="v-read">〜りょく</div><div class="v-def">體力、單字力、對話力、寫作力</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 文法 -->
+  <details class="accord gram" open>
+    <summary><span class="sec-icon">✏️</span><span class="sec-label">文法</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="gram-list">
+        <div class="g-item">
+          <div class="g-pattern">〜と書いてあります</div>
+          <div class="g-meaning">上面寫著〜（書寫存在狀態）</div>
+          <div class="g-example">２番ホーム、新宿・東京方面と書いてあります。</div>
+          <div class="g-en">It says "Platform 2, towards Shinjuku / Tokyo."</div>
+        </div>
+        <div class="g-item">
+          <div class="g-pattern">〜が 飾ってあります ／ 置いてあります</div>
+          <div class="g-meaning">擺放著〜（有人刻意放置的結果狀態）</div>
+          <div class="g-example">壁に桜とお寺の絵が飾ってあります。<br>カウンターの上にペンとライトが置いてあります。</div>
+          <div class="g-en">A picture is displayed on the wall. / A pen and light are placed on the counter.</div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 口說フレーズ -->
+  <details class="accord phrase" open>
+    <summary><span class="sec-icon">💬</span><span class="sec-label">日常の生活リズム</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="phrase-list">
+        <div class="p-item"><div class="p-jp">毎日 ７時に 起きます。</div><div class="p-note">我每天早上7點起床。</div></div>
+        <div class="p-item"><div class="p-jp">たいてい、夜 １２時に 寝ます。</div><div class="p-note">我通常晚上12點睡覺。（たいてい ＝ 通常）</div></div>
+        <div class="p-item"><div class="p-jp">毎日 ７時間 寝ています。</div><div class="p-note">我每天睡7個小時。</div></div>
+        <div class="p-item"><div class="p-jp">お昼寝はしません。</div><div class="p-note">我不午睡。</div></div>
+        <div class="p-item"><div class="p-jp">月に３回、〇〇があります。</div><div class="p-note">一個月有3次〜。（頻率表達方式）</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 延伸 -->
+  <details class="accord ext">
+    <summary><span class="sec-icon">🌸</span><span class="sec-label">延伸メモ</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="ext-list">
+        <div class="e-item"><div class="e-title">日本 vs 台湾のお弁当</div><div class="e-body">台湾のお弁当は温かいですが、日本のお弁当は冷たいです。台湾のお弁当は温めないで食べられます。（可不加熱直接吃）</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 課後作業 -->
+  <details class="accord hw" open>
+    <summary><span class="sec-icon">📝</span><span class="sec-label">課後作業</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="hw-list">
+        <div class="hw-item">
+          <div class="hw-label">✅ 下次帶去</div>
+          <div class="hw-body">台湾のコンビニのお弁当の写真を次回見せてください！そのお弁当の内容を日本語で教えてください 😊</div>
+        </div>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     LESSON 3 — 115.09.03
+     ════════════════════════════════════════════════════════════ -->
+<div class="lesson-panel">
+  <div class="lesson-theme">第3回 ― 交通比較・食べ物・外食・お土産</div>
+  <div class="lesson-desc">比較表現、レストランでの会話、土産屋シーン、北陸旅行体験（白川郷・竹細工など）。</div>
+
+  <!-- 老師反饋 -->
+  <details class="accord fb" open>
+    <summary><span class="sec-icon">📋</span><span class="sec-label">老師反饋</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="fb-list">
+        <div class="fb-block">
+          <div class="fb-head">📝 今回のレッスン内容</div>
+          <div class="fb-body">
+            <ul>
+              <li><strong>日常会話・比較表現</strong>：電車と車どちらが好き・安い・時間がかかるか、最寄り駅について</li>
+              <li><strong>お弁当・旅行体験</strong>：台湾の名物お弁当（ルーローハン、パイコー、雑穀米）、北陸旅行（白川郷、竹細工、和紙、洪水）</li>
+              <li><strong>画像描写・会話練習</strong>：レストラン・お土産屋さんのシーン</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 単語 -->
+  <details class="accord vocab" open>
+    <summary><span class="sec-icon">📖</span><span class="sec-label">単語</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="vocab-grid">
+        <div class="v-item"><div class="v-jp">最寄り駅</div><div class="v-read">もよりえき</div><div class="v-def">離家最近的車站</div></div>
+        <div class="v-item"><div class="v-jp">雑穀米</div><div class="v-read">ざっこくまい</div><div class="v-def">雜糧米</div></div>
+        <div class="v-item"><div class="v-jp">十六穀米</div><div class="v-read">じゅうろっこくまい</div><div class="v-def">十六種穀物的米</div></div>
+        <div class="v-item"><div class="v-jp">ターメリックライス</div><div class="v-read">薑黃飯</div><div class="v-def">薑黃飯</div></div>
+        <div class="v-item"><div class="v-jp">血糖値</div><div class="v-read">けっとうち</div><div class="v-def">血糖值</div></div>
+        <div class="v-item"><div class="v-jp">招き猫</div><div class="v-read">まねきねこ</div><div class="v-def">招財貓</div></div>
+        <div class="v-item"><div class="v-jp">だるま</div><div class="v-read">達磨</div><div class="v-def">達摩（日本吉祥物）</div></div>
+        <div class="v-item"><div class="v-jp">竹細工</div><div class="v-read">たけざいく</div><div class="v-def">竹工藝</div></div>
+        <div class="v-item"><div class="v-jp">伝統工芸</div><div class="v-read">でんとうこうげい</div><div class="v-def">傳統工藝</div></div>
+        <div class="v-item"><div class="v-jp">地場のもの</div><div class="v-read">じば</div><div class="v-def">當地特有的物品</div></div>
+        <div class="v-item"><div class="v-jp">洪水</div><div class="v-read">こうずい</div><div class="v-def">洪水、淹水</div></div>
+        <div class="v-item"><div class="v-jp">和紙</div><div class="v-read">わし</div><div class="v-def">日本傳統紙</div></div>
+        <div class="v-item"><div class="v-jp">健康的な ／ 健康にいい</div><div class="v-read">けんこうてき</div><div class="v-def">健康的</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 文法 -->
+  <details class="accord gram" open>
+    <summary><span class="sec-icon">✏️</span><span class="sec-label">文法 ― 比較表現</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="gram-list">
+        <div class="g-item">
+          <div class="g-pattern">A より B の方が 〜</div>
+          <div class="g-meaning">B 比 A 更〜（比較句型）</div>
+          <div class="g-example">私は電車より車の方が好きです。<br>新幹線より車の方が安いです。<br>車の方が電車よりも時間がかかります。<br>車の方が電車より便利です。</div>
+          <div class="g-en">I like car more than train. / Car is cheaper than Shinkansen. / Car takes more time than train.</div>
+        </div>
+        <div class="g-item">
+          <div class="g-pattern">こういう ／ このような ／ これみたいな</div>
+          <div class="g-meaning">像這樣的〜（三個都可替換，口語程度：これみたいな ＞ こういう ＞ このような）</div>
+          <div class="g-example">最近このような健康にいいお弁当がたくさんあります。</div>
+          <div class="g-en">Recently there are many healthy lunch boxes like this.</div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 口說フレーズ -->
+  <details class="accord phrase" open>
+    <summary><span class="sec-icon">💬</span><span class="sec-label">レストランの会話</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="phrase-list">
+        <div class="p-item"><div class="p-jp">ご注文はお決まりですか？</div><div class="p-note">請問您決定好要點什麼了嗎？（店員說）</div></div>
+        <div class="p-item"><div class="p-jp">これをお願いします。</div><div class="p-note">我要點這個。（客人說）</div></div>
+        <div class="p-item"><div class="p-jp">かしこまりました。</div><div class="p-note">好的，知道了。（最正式的了解，店員・飯店用）</div></div>
+        <div class="p-item"><div class="p-jp">その土地でしか買えないもの</div><div class="p-note">只有當地才買得到的東西（挑伴手禮的思路）</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 延伸 -->
+  <details class="accord ext">
+    <summary><span class="sec-icon">🌸</span><span class="sec-label">延伸メモ ― 白川郷体験</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="ext-list">
+        <div class="e-item"><div class="e-title">白川郷（しらかわごう）</div><div class="e-body">世界遺産。合掌造り（がっしょうづくり）の家が有名。竹細工・和紙づくりの体験ができる。（北陸地區，茅葺屋頂）</div></div>
+        <div class="e-item"><div class="e-title">ルーローハン（煮込みパイコー）</div><div class="e-body">豚の骨付き肉の煮込み ＝ スペアリブ。台湾の代表的なお弁当の具材。</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 課後作業 -->
+  <details class="accord hw" open>
+    <summary><span class="sec-icon">📝</span><span class="sec-label">課後作業</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="hw-list">
+        <div class="hw-item">
+          <div class="hw-label">✍️ 練習題</div>
+          <div class="hw-body">今回出てきた「比較表現の例文」や「重要単語リスト」を使って、簡単な日本語の文章をいくつか作ってみましょう！次回レッスンで一緒にチェックします。</div>
+          <div class="hw-ex">例：台中駅が私の最寄り駅です。</div>
+          <div class="hw-ex">例：電車より車の方が______です。</div>
+        </div>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     LESSON 4 — 115.09.07
+     ════════════════════════════════════════════════════════════ -->
+<div class="lesson-panel">
+  <div class="lesson-theme">第4回 ― 日常生活・家族・日本でのショッピング・文化体験</div>
+  <div class="lesson-desc">頻度表現、義理の家族の呼び方、免税ショッピング、職人表現、擬音語、好奇心旺盛な表現。</div>
+
+  <!-- 老師反饋 -->
+  <details class="accord fb" open>
+    <summary><span class="sec-icon">📋</span><span class="sec-label">老師反饋</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="fb-list">
+        <div class="fb-block">
+          <div class="fb-head">🌟 老師評語</div>
+          <div class="fb-body">「〜しないといけません」の義務表現も文脈に合わせて正しく使えています。ご家族ととても良い関係を築かれていることが伝わってきて、微笑ましかったです！この調子で、ご自身の身の回りのことや日課について日本語で話す練習を続けていきましょう！</div>
+        </div>
+        <div class="fb-block">
+          <div class="fb-head">📝 今回のレッスン内容</div>
+          <div class="fb-body">
+            <ul>
+              <li><strong>日常・スケジュール</strong>：美容院→塾、奥様のお仕事、お子様を義母に預ける話</li>
+              <li><strong>頻度表現</strong>：「どのくらいの頻度で〜しますか？」の質問と回答</li>
+              <li><strong>義理の家族の呼び方</strong>：お義母さん／義母（ぎぼ）、お義父さん／義父（ぎふ）の違い</li>
+              <li><strong>画像描写</strong>：和菓子作り体験・食品サンプルのシーン、白川郷の観光案内所</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 単語 -->
+  <details class="accord vocab" open>
+    <summary><span class="sec-icon">📖</span><span class="sec-label">単語</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="vocab-grid">
+        <div class="v-item"><div class="v-jp">頻度</div><div class="v-read">ひんど</div><div class="v-def">頻率 frequency</div></div>
+        <div class="v-item"><div class="v-jp">お義母さん（義母）</div><div class="v-read">おかあさん / ぎぼ</div><div class="v-def">岳母、婆婆</div></div>
+        <div class="v-item"><div class="v-jp">お義父さん（義父）</div><div class="v-read">おとうさん / ぎふ</div><div class="v-def">岳父、公公</div></div>
+        <div class="v-item"><div class="v-jp">仲が良い</div><div class="v-read">なかがいい</div><div class="v-def">關係好、感情融洽</div></div>
+        <div class="v-item"><div class="v-jp">預ける</div><div class="v-read">あずける</div><div class="v-def">寄放、托付</div></div>
+        <div class="v-item"><div class="v-jp">免税</div><div class="v-read">めんぜい</div><div class="v-def">免稅 duty-free</div></div>
+        <div class="v-item"><div class="v-jp">電化製品</div><div class="v-read">でんかせいひん</div><div class="v-def">電器產品</div></div>
+        <div class="v-item"><div class="v-jp">好奇心旺盛</div><div class="v-read">こうきしんおうせい</div><div class="v-def">充滿好奇心</div></div>
+        <div class="v-item"><div class="v-jp">観光案内所</div><div class="v-read">かんこうあんないじょ</div><div class="v-def">旅遊諮詢中心</div></div>
+        <div class="v-item"><div class="v-jp">擬音語（擬態語）</div><div class="v-read">ぎおんご / ぎたいご</div><div class="v-def">象聲詞、狀態擬聲詞</div></div>
+        <div class="v-item"><div class="v-jp">職人</div><div class="v-read">しょくにん</div><div class="v-def">工匠、師傅</div></div>
+        <div class="v-item"><div class="v-jp">ベテラン ／ 玄人</div><div class="v-read">べてらん / くろうと</div><div class="v-def">老手、行家</div></div>
+        <div class="v-item"><div class="v-jp">偶然の出会い</div><div class="v-read">ぐうぜん</div><div class="v-def">偶然的邂逅</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 文法 -->
+  <details class="accord gram" open>
+    <summary><span class="sec-icon">✏️</span><span class="sec-label">文法</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="gram-list">
+        <div class="g-item">
+          <div class="g-pattern">〜しないといけません</div>
+          <div class="g-meaning">必須做〜 ／ I have to 〜</div>
+          <div class="g-example">はやく寝ないといけません。<br>時々、仕事に早く行かないといけません。</div>
+          <div class="g-en">I have to sleep early. / Sometimes I have to go to work early.</div>
+        </div>
+        <div class="g-item">
+          <div class="g-pattern">〜週間に〜回くらいの頻度で</div>
+          <div class="g-meaning">每〜週大約〜次的頻率</div>
+          <div class="g-example">１週間に２回くらいの頻度でレッスンをしています。<br>大体、一カ月半くらいの頻度で美容院へ行きます。</div>
+          <div class="g-en">I have lessons about 2 times per week. / I go to the salon about once every 1.5 months.</div>
+        </div>
+        <div class="g-item">
+          <div class="g-pattern">〜に行ってから、〜に行きます</div>
+          <div class="g-meaning">先去〜之後，再去〜（動作順序）</div>
+          <div class="g-example">美容院に髪を切りに行ってから、塾に行きます。</div>
+          <div class="g-en">After going to the salon to cut my hair, I go to cram school.</div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 口說フレーズ -->
+  <details class="accord phrase" open>
+    <summary><span class="sec-icon">💬</span><span class="sec-label">職人・専門家の表現</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="phrase-list">
+        <div class="p-item"><div class="p-jp">職人 ＞ プロ／プロフェッショナル ＞ ベテラン ＞ 玄人（くろうと）</div><div class="p-note">從「工匠師傅」到「行家老手」的程度差異</div></div>
+        <div class="p-item"><div class="p-jp">その技術にたけている / 技術と集中力が必要です</div><div class="p-note">擅長那項技術 ／ 需要技術和專注力</div></div>
+        <div class="p-item"><div class="p-jp">くねくね ／ ぐねぐね ／ ぐにゃぐにゃ</div><div class="p-note">形容彎曲扭動的擬態語（像蛇一樣）</div></div>
+        <div class="p-item"><div class="p-jp">私は好奇心旺盛です。</div><div class="p-note">我是一個充滿好奇心的人。（自我介紹常用）</div></div>
+        <div class="p-item"><div class="p-jp">偶然見かけて、車を停めました。</div><div class="p-note">偶然看到，就把車停下來了。（旅行時常用）</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 延伸 -->
+  <details class="accord ext">
+    <summary><span class="sec-icon">🌸</span><span class="sec-label">延伸メモ</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="ext-list">
+        <div class="e-item"><div class="e-title">ささら ― 伝統楽器</div><div class="e-body">木製の伝統楽器。お祭りの時に演奏される。白川郷の観光案内所で紹介してもらった。（木製、祭典時使用，在路邊偶然發現的）</div></div>
+        <div class="e-item"><div class="e-title">台湾人が日本で買うもの</div><div class="e-body">薬局（ドラッグストア）で薬・パック・化粧品を免税で購入するのが人気。韓国コスメも日本の方が安い。西松屋では子供服が安くて種類が豊富。</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 課後作業 -->
+  <details class="accord hw" open>
+    <summary><span class="sec-icon">📝</span><span class="sec-label">課後作業</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="hw-list">
+        <div class="hw-item">
+          <div class="hw-label">✍️ 頻度表現の練習</div>
+          <div class="hw-body">日常の行動（ジムに行く、買い物に行く、旅行に行く、カフェへ行くなど）について、「どのくらいの頻度で行くか」を説明する文を作ってみましょう。</div>
+          <div class="hw-ex">例：私は１週間に１回、スーパーへ買い物に行きます。</div>
+          <div class="hw-ex">例：大体、___ヶ月に___回くらいの頻度で___に行きます。</div>
+        </div>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     LESSON 5 — 115.09.10
+     ════════════════════════════════════════════════════════════ -->
+<div class="lesson-panel">
+  <div class="lesson-theme">第5回 ― 通勤・台湾と日本の車事情・スラング「めっちゃ」</div>
+  <div class="lesson-desc">台北→台中の深夜移動、交通ルールの比較、車購入体験、関西弁スラングの導入。</div>
+
+  <!-- 老師反饋 -->
+  <details class="accord fb" open>
+    <summary><span class="sec-icon">📋</span><span class="sec-label">老師反饋</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="fb-list">
+        <div class="fb-block">
+          <div class="fb-head">📝 今回のレッスン内容</div>
+          <div class="fb-body">
+            <ul>
+              <li><strong>昨日の出来事</strong>：台北での授業・深夜の車移動の話、「飛ばす」という表現を学習</li>
+              <li><strong>車文化の比較</strong>：去年車を購入した経験、台湾でのトヨタの印象を共有</li>
+              <li><strong>交通ルールの違い</strong>：台湾・日本の高速道路ルール、日本でレンタカー運転時の違い</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 単語 -->
+  <details class="accord vocab" open>
+    <summary><span class="sec-icon">📖</span><span class="sec-label">単語 ― 車・交通</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="vocab-grid">
+        <div class="v-item"><div class="v-jp">さっぱりしました</div><div class="v-read">さっぱり</div><div class="v-def">感覺清爽了（剪完頭髮、洗完澡後）</div></div>
+        <div class="v-item"><div class="v-jp">制限速度</div><div class="v-read">せいげんそくど</div><div class="v-def">速度限制</div></div>
+        <div class="v-item"><div class="v-jp">スピード違反</div><div class="v-read">いはん</div><div class="v-def">超速違規</div></div>
+        <div class="v-item"><div class="v-jp">罰金</div><div class="v-read">ばっきん</div><div class="v-def">罰款</div></div>
+        <div class="v-item"><div class="v-jp">免許証</div><div class="v-read">めんきょしょう</div><div class="v-def">駕照</div></div>
+        <div class="v-item"><div class="v-jp">関税</div><div class="v-read">かんぜい</div><div class="v-def">關稅</div></div>
+        <div class="v-item"><div class="v-jp">装備</div><div class="v-read">そうび</div><div class="v-def">配備、配件（車子的）</div></div>
+        <div class="v-item"><div class="v-jp">丈夫 ／ 頑丈</div><div class="v-read">じょうぶ / がんじょう</div><div class="v-def">堅固耐用</div></div>
+        <div class="v-item"><div class="v-jp">耐用年数</div><div class="v-read">たいようねんすう</div><div class="v-def">使用年限</div></div>
+        <div class="v-item"><div class="v-jp">燃費が良い／悪い</div><div class="v-read">ねんぴ</div><div class="v-def">省油／耗油</div></div>
+        <div class="v-item"><div class="v-jp">軽自動車</div><div class="v-read">けいじどうしゃ</div><div class="v-def">輕型車（日本特有）</div></div>
+        <div class="v-item"><div class="v-jp">路上駐車 ／ 路駐</div><div class="v-read">ろじょうちゅうしゃ / ろちゅう</div><div class="v-def">路邊停車</div></div>
+        <div class="v-item"><div class="v-jp">輸出 ／ 輸入</div><div class="v-read">ゆしゅつ / ゆにゅう</div><div class="v-def">出口 ／ 進口</div></div>
+        <div class="v-item"><div class="v-jp">追加料金</div><div class="v-read">ついかりょうきん</div><div class="v-def">附加費用</div></div>
+        <div class="v-item"><div class="v-jp">代謝 ／ 基礎代謝</div><div class="v-read">たいしゃ / きそたいしゃ</div><div class="v-def">代謝 ／ 基礎代謝（類比燃費）</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 文法 -->
+  <details class="accord gram" open>
+    <summary><span class="sec-icon">✏️</span><span class="sec-label">文法</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="gram-list">
+        <div class="g-item">
+          <div class="g-pattern">〜しか 〜ません</div>
+          <div class="g-meaning">只有〜（強調數量少）</div>
+          <div class="g-example">５時間半しか寝ていません。</div>
+          <div class="g-en">I only slept 5.5 hours. (Not enough!)</div>
+        </div>
+        <div class="g-item">
+          <div class="g-pattern">〜ので、〜</div>
+          <div class="g-meaning">因為〜，所以〜（客觀理由）</div>
+          <div class="g-example">毎日、長い距離を運転するので、燃費が良いトヨタのハイブリッドが一番いいです。</div>
+          <div class="g-en">Since I drive long distances daily, a fuel-efficient Toyota hybrid is best.</div>
+        </div>
+        <div class="g-item">
+          <div class="g-pattern">緩い（ゆるい） ↔ 厳しい（きびしい）</div>
+          <div class="g-meaning">寬鬆 ↔ 嚴格（形容規則、管理）</div>
+          <div class="g-example">台湾の方が規則が日本よりも緩いと思います。</div>
+          <div class="g-en">I think Taiwan's rules are more lenient than Japan's.</div>
+        </div>
+        <div class="g-item">
+          <div class="g-pattern">飛ばす（とばす）</div>
+          <div class="g-meaning">超速飆車（口語）</div>
+          <div class="g-example">高速道路でスピードを飛ばしています。</div>
+          <div class="g-en">Speeding on the highway.</div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 口說フレーズ -->
+  <details class="accord phrase" open>
+    <summary><span class="sec-icon">💬</span><span class="sec-label">口說フレーズ + スラング「めっちゃ」</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="phrase-list">
+        <div class="p-item"><div class="p-jp">さっぱりしましたね！</div><div class="p-note">感覺清爽了呢！（剪完頭髮、淋完浴後的感嘆）</div></div>
+        <div class="p-item"><div class="p-jp">台北から台中まで車で約２時間かかります。</div><div class="p-note">從台北到台中開車大約需要2小時。（距離・時間說法）</div></div>
+        <div class="p-item"><div class="p-jp">ローンで買いました。</div><div class="p-note">我用分期付款買的。</div></div>
+        <div class="p-item"><div class="p-jp">取り締まりは厳しいですか？</div><div class="p-note">取締很嚴格嗎？（詢問交通規則）</div></div>
+      </div>
+      <div style="height:12px"></div>
+      <div class="slang-box">
+        <div class="slang-word">めっちゃ〜</div>
+        <div style="font-size:13px;color:var(--text-sub);margin-bottom:8px;">＝ すごく ／ とても（關西方言，現在全日本年輕人都使用）</div>
+        <div class="slang-chips">
+          <div class="slang-chip">めっちゃうまい！</div>
+          <div class="slang-chip">めっちゃおいしい！</div>
+          <div class="slang-chip">めっちゃきれい</div>
+          <div class="slang-chip">めっちゃつかれた</div>
+          <div class="slang-chip">めっちゃねむい</div>
+          <div class="slang-chip">めっちゃ高い！</div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 延伸 -->
+  <details class="accord ext">
+    <summary><span class="sec-icon">🌸</span><span class="sec-label">延伸メモ ― 台湾・日本の車事情</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="ext-list">
+        <div class="e-item"><div class="e-title">台湾の超速ルール</div><div class="e-body">制限速度を40km超えると、ナンバープレートを半年没収。罰金は約28,000台湾ドル（日本円で約13万円）。</div></div>
+        <div class="e-item"><div class="e-title">軽自動車（けいじどうしゃ）</div><div class="e-body">日本だけの車種。小さくて可愛く税金も安い。外国では売っていない（輸出されない）。エリカ先生も大好き。</div></div>
+        <div class="e-item"><div class="e-title">ウィンカー vs ワイパー</div><div class="e-body">日本と台湾ではハンドルのウィンカー・ワイパーの位置が逆。初めて日本で運転した際によく間違える。</div></div>
+        <div class="e-item"><div class="e-title">トヨタが台湾で人気な理由</div><div class="e-body">丈夫で耐用年数が長い。高くても・装備を抜かれても壊れないから皆買う。ヨーロッパ車より耐用年数が長い。</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 課後作業 -->
+  <details class="accord hw" open>
+    <summary><span class="sec-icon">📝</span><span class="sec-label">課後作業</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="hw-list">
+        <div class="hw-item">
+          <div class="hw-label">📚 語彙復習</div>
+          <div class="hw-body">今回のレッスンで新しく出てきた車や交通ルールに関する単語（「飛ばす」「制限速度」「耐用年数」「燃費」など）を無理のない範囲で振り返ってみましょう。</div>
+          <div class="hw-ex">例：私の車は燃費が______です。</div>
+          <div class="hw-ex">例：台湾の高速道路の制限速度は______km/hです。</div>
+        </div>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     ▼ 新增下一堂課時，複製以下模板貼在這裡 ▼
+
+<div class="lesson-panel">
+  <div class="lesson-theme">第N回 ― テーマ</div>
+  <div class="lesson-desc">サブタイトル・概要</div>
+
+  <details class="accord fb" open>
+    <summary><span class="sec-icon">📋</span><span class="sec-label">老師反饋</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">...</div>
+  </details>
+
+  <details class="accord vocab" open>
+    <summary><span class="sec-icon">📖</span><span class="sec-label">単語</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="vocab-grid">
+        <div class="v-item"><div class="v-jp">単語</div><div class="v-read">よみかた</div><div class="v-def">意味</div></div>
+      </div>
+    </div>
+  </details>
+
+  <details class="accord gram" open>
+    <summary><span class="sec-icon">✏️</span><span class="sec-label">文法</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="gram-list">
+        <div class="g-item">
+          <div class="g-pattern">パターン</div>
+          <div class="g-meaning">意味</div>
+          <div class="g-example">例文</div>
+          <div class="g-en">English translation</div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details class="accord phrase" open>
+    <summary><span class="sec-icon">💬</span><span class="sec-label">口說フレーズ</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="phrase-list">
+        <div class="p-item"><div class="p-jp">フレーズ</div><div class="p-note">意味・用法</div></div>
+      </div>
+    </div>
+  </details>
+
+  <details class="accord ext">
+    <summary><span class="sec-icon">🌸</span><span class="sec-label">延伸メモ</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="ext-list">
+        <div class="e-item"><div class="e-title">タイトル</div><div class="e-body">内容</div></div>
+      </div>
+    </div>
+  </details>
+
+  <details class="accord hw" open>
+    <summary><span class="sec-icon">📝</span><span class="sec-label">課後作業</span><span class="accord-chevron">▶</span></summary>
+    <div class="accord-body">
+      <div class="hw-list">
+        <div class="hw-item">
+          <div class="hw-label">✍️ 練習題</div>
+          <div class="hw-body">内容</div>
+          <div class="hw-ex">例文</div>
+        </div>
+      </div>
+    </div>
+  </details>
+</div>
+
+     ▲ 複製到這裡 ▲
+     同時要在 <select> 裡加一個 <option value="N">，N 從 5 開始遞增，共 X 回的數字會自動更新
+     ════════════════════════════════════════════════════════════ -->
+
+</div><!-- /tabs-wrapper -->
+
+<script>
+  function switchLesson(index) {
+    index = parseInt(index, 10);
+    document.querySelectorAll('.lesson-panel').forEach((p, i) => p.classList.toggle('active', i === index));
+    document.getElementById('lessonSelect').value = index;
+  }
+
+  // Auto-update the total count from number of options
+  (function() {
+    const sel = document.getElementById('lessonSelect');
+    document.getElementById('totalCount').textContent = sel.options.length;
+  })();
+</script>
+
+</body>
+</html>
