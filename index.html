@@ -409,10 +409,10 @@ body {
 }
 .card-count strong { color: var(--tab-ink); }
 
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 14px;
+.card-stage {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 24px;
 }
 
 /* ════════════════════════════════════════
@@ -420,7 +420,9 @@ body {
    ════════════════════════════════════════ */
 .fc-wrap {
   perspective: 900px;
-  min-height: 155px;
+  width: 100%;
+  max-width: 520px;
+  height: 260px;
   cursor: pointer;
 }
 .fc-wrap.fc-hidden { display: none; }
@@ -428,7 +430,6 @@ body {
 .fc {
   position: relative;
   width: 100%;
-  min-height: 155px;
   height: 100%;
   transform-style: preserve-3d;
   transition: transform 0.42s cubic-bezier(0.4, 0, 0.2, 1);
@@ -438,14 +439,13 @@ body {
 .fc-front, .fc-back {
   position: absolute;
   inset: 0;
-  border-radius: 10px;
-  padding: 14px 14px 12px;
+  border-radius: 12px;
+  padding: 22px 26px 18px;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   display: flex;
   flex-direction: column;
   border: 1.5px solid var(--border);
-  min-height: 155px;
 }
 .fc-back { transform: rotateY(180deg); }
 
@@ -459,32 +459,36 @@ body {
 
 /* front */
 .fc-badge {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-hint);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  text-align: center;
 }
 .fc-word {
   font-family: 'Noto Serif JP', serif;
-  font-size: 18px;
+  font-size: 32px;
   font-weight: 700;
   color: var(--vocab-fg);
   line-height: 1.35;
   flex: 1;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 .fc-gword {
   font-family: 'Noto Serif JP', serif;
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--gram-fg);
   line-height: 1.5;
   flex: 1;
   display: flex;
   align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 .fc-tap {
   font-size: 10px;
@@ -555,11 +559,63 @@ body {
 }
 .shuffle-btn:hover { border-color: var(--tab-ink); color: var(--tab-ink); }
 
-@media (max-width: 500px) {
-  .card-grid { grid-template-columns: 1fr 1fr; }
+/* ── Study Mode ── */
+.study-toolbar { margin-bottom: 20px; }
+.study-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
 }
-@media (max-width: 340px) {
-  .card-grid { grid-template-columns: 1fr; }
+.card-counter {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-sub);
+}
+.card-audio-hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 8px;
+}
+.audio-btn {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface2);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.audio-btn:hover { border-color: var(--tab-ink); color: var(--tab-ink); }
+.study-nav {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+.nav-btn {
+  padding: 10px 32px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 2px solid var(--border);
+  border-radius: 24px;
+  background: var(--surface);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.nav-btn:hover { border-color: var(--tab-ink); color: var(--tab-ink); }
+.nav-btn.primary { background: var(--tab-ink); border-color: var(--tab-ink); color: #fff; }
+.nav-btn.primary:hover { opacity: 0.88; }
+@media (max-width: 500px) {
+  .fc-wrap { height: 220px; }
+  .fc-word { font-size: 24px; }
+  .fc-gword { font-size: 16px; }
+  .nav-btn { padding: 9px 22px; font-size: 13px; }
 }
 </style>
 </head>
@@ -587,8 +643,7 @@ body {
      ════════════════════════════════════════ -->
 <nav class="view-nav" id="viewNav">
   <button class="view-btn active" onclick="switchView('notes',this)">📝 課程筆記</button>
-  <button class="view-btn" onclick="switchView('vocab',this)">📖 單字卡</button>
-  <button class="view-btn" onclick="switchView('gram',this)">✏️ 文法卡</button>
+  <button class="view-btn" onclick="switchView('cards',this)">🃏 單字文法卡</button>
 </nav>
 
 <!-- ════════════════════════════════════════
@@ -1418,249 +1473,60 @@ body {
 </div><!-- /view-notes -->
 
 <!-- ════════════════════════════════════════
-     VIEW: 單字卡
+     VIEW: 單字文法卡（單卡學習）
      ════════════════════════════════════════ -->
-<div id="view-vocab" class="view">
+<div id="view-cards" class="view">
 <div class="card-section">
-  <div class="filter-row" id="vFilterRow">
-    <button class="filter-btn active" onclick="filterCards('vocab','all',this)">全部</button>
-    <button class="filter-btn" onclick="filterCards('vocab','1',this)">第1回</button>
-    <button class="filter-btn" onclick="filterCards('vocab','2',this)">第2回</button>
-    <button class="filter-btn" onclick="filterCards('vocab','3',this)">第3回</button>
-    <button class="filter-btn" onclick="filterCards('vocab','4',this)">第4回</button>
-    <button class="filter-btn" onclick="filterCards('vocab','5',this)">第5回</button>
-    <button class="filter-btn" onclick="filterCards('vocab','6',this)">第6回</button>
+  <!-- ── 篩選列 ── -->
+  <div class="study-toolbar">
+    <div class="filter-row" id="cardFilterRow">
+      <button class="filter-btn active" onclick="setFilter('all',this)">全部</button>
+      <button class="filter-btn" onclick="setFilter('vocab',this)">単語</button>
+      <button class="filter-btn" onclick="setFilter('gram',this)">文法</button>
+      <button class="filter-btn" onclick="setFilter('l1',this)">第1回</button>
+      <button class="filter-btn" onclick="setFilter('l2',this)">第2回</button>
+      <button class="filter-btn" onclick="setFilter('l3',this)">第3回</button>
+      <button class="filter-btn" onclick="setFilter('l4',this)">第4回</button>
+      <button class="filter-btn" onclick="setFilter('l5',this)">第5回</button>
+      <button class="filter-btn" onclick="setFilter('l6',this)">第6回</button>
+    </div>
+    <div class="study-meta">
+      <span class="card-counter" id="cardCounter">第 1 / 57 張</span>
+      <button class="shuffle-btn" onclick="shuffleDeck()">🔀 隨機排列</button>
+    </div>
   </div>
-  <div class="fc-toolbar">
-    <span class="card-count">顯示 <strong id="vocabCount">0</strong> 張</span>
-    <button class="shuffle-btn" onclick="shuffleCards('vocabGrid')">🔀 隨機排列</button>
-    <button class="shuffle-btn" onclick="resetAllFlip('vocabGrid')">🔄 全部收起</button>
+  <!-- ── 單卡舞台 ── -->
+  <div class="card-stage">
+    <div class="fc-wrap" id="studyCard" onclick="flipCard()">
+      <div class="fc">
+        <div class="fc-front">
+          <div class="fc-badge" id="cardBadge"></div>
+          <div id="cardWord"></div>
+          <div class="card-audio-hint">
+            <button class="audio-btn" onclick="event.stopPropagation();speakFront()">🔊 發音</button>
+            <span class="fc-tap">點擊翻面 →</span>
+          </div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-reading" id="cardReading"></div>
+          <div class="fc-def" id="cardDef"></div>
+          <div class="fc-ex" id="cardEx"></div>
+          <div class="card-audio-hint">
+            <button class="audio-btn" onclick="event.stopPropagation();speakBack()">🔊 例句</button>
+            <span class="fc-flip-hint">← 再次點擊</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="card-grid" id="vocabGrid">
-
-    <!-- ── 第1回 ── -->
-    <div class="fc-wrap fc-v" data-lesson="1" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第1回 · 單字</div><div class="fc-word">5泊6日</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">ごはく むいか</div><div class="fc-def">5晚6天（旅行天數說法）</div><div class="fc-ex">5泊6日の旅行をしました。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="1" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第1回 · 単語</div><div class="fc-word">大人</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">おとな</div><div class="fc-def">大人、成人</div><div class="fc-ex">大人二人でホテルを予約しました。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="1" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第1回 · 単語</div><div class="fc-word">後ろ</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">うしろ</div><div class="fc-def">後面、後方</div><div class="fc-ex">後ろに大きな看板があります。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="1" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第1回 · 単語</div><div class="fc-word">文法</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">ぶんぽう</div><div class="fc-def">文法 Grammar</div><div class="fc-ex">文法を毎日練習しています。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-
-    <!-- ── 第2回 ── -->
-    <div class="fc-wrap fc-v" data-lesson="2" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第2回 · 単語</div><div class="fc-word">券売機</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">けんばいき</div><div class="fc-def">自動售票機</div><div class="fc-ex">券売機で切符を買います。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="2" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第2回 · 単語</div><div class="fc-word">切符</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">きっぷ</div><div class="fc-def">車票</div><div class="fc-ex">新幹線の切符を一枚ください。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="2" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第2回 · 単語</div><div class="fc-word">ホーム</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">ほーむ（月台）</div><div class="fc-def">月台 platform</div><div class="fc-ex">２番ホームで電車を待っています。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="2" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第2回 · 単語</div><div class="fc-word">受付</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">うけつけ</div><div class="fc-def">接待處、前台</div><div class="fc-ex">ホテルの受付でチェックインします。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="2" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第2回 · 単語</div><div class="fc-word">鍵を渡す</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">かぎをわたす</div><div class="fc-def">交鑰匙</div><div class="fc-ex">フロントが鍵を渡してくれました。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="2" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第2回 · 単語</div><div class="fc-word">案内をする</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">あんないをする</div><div class="fc-def">引導、介紹</div><div class="fc-ex">スタッフが部屋まで案内をしてくれました。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-
-    <!-- ── 第3回 ── -->
-    <div class="fc-wrap fc-v" data-lesson="3" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第3回 · 単語</div><div class="fc-word">最寄り駅</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">もよりえき</div><div class="fc-def">離家最近的車站</div><div class="fc-ex">私の最寄り駅は台中駅です。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="3" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第3回 · 単語</div><div class="fc-word">竹細工</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">たけざいく</div><div class="fc-def">竹工藝</div><div class="fc-ex">白川郷で竹細工を体験しました。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="3" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第3回 · 単語</div><div class="fc-word">招き猫</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">まねきねこ</div><div class="fc-def">招財貓</div><div class="fc-ex">お土産屋さんに招き猫がたくさんあります。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="3" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第3回 · 単語</div><div class="fc-word">和紙</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">わし</div><div class="fc-def">日本傳統紙</div><div class="fc-ex">和紙は白川郷の伝統工芸です。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="3" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第3回 · 単語</div><div class="fc-word">伝統工芸</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">でんとうこうげい</div><div class="fc-def">傳統工藝</div><div class="fc-ex">地元の伝統工芸を体験しました。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="3" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第3回 · 単語</div><div class="fc-word">地場のもの</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">じばのもの</div><div class="fc-def">當地特有的物品</div><div class="fc-ex">地場のものをお土産に買いました。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-
-    <!-- ── 第4回 ── -->
-    <div class="fc-wrap fc-v" data-lesson="4" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第4回 · 単語</div><div class="fc-word">頻度</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">ひんど</div><div class="fc-def">頻率 frequency</div><div class="fc-ex">どのくらいの頻度で行きますか？</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="4" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第4回 · 単語</div><div class="fc-word">お義母さん</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">おかあさん / ぎぼ</div><div class="fc-def">岳母、婆婆</div><div class="fc-ex">子供をお義母さんに預けました。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="4" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第4回 · 単語</div><div class="fc-word">預ける</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">あずける</div><div class="fc-def">寄放、托付</div><div class="fc-ex">毎週、子供を義母に預けます。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="4" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第4回 · 単語</div><div class="fc-word">免税</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">めんぜい</div><div class="fc-def">免稅 duty-free</div><div class="fc-ex">免税でコスメを買いました。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="4" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第4回 · 単語</div><div class="fc-word">好奇心旺盛</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">こうきしんおうせい</div><div class="fc-def">充滿好奇心</div><div class="fc-ex">私は好奇心旺盛な人間です。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="4" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第4回 · 単語</div><div class="fc-word">職人</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">しょくにん</div><div class="fc-def">工匠、師傅</div><div class="fc-ex">職人が丁寧に和菓子を作っています。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="4" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第4回 · 単語</div><div class="fc-word">偶然の出会い</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">ぐうぜんのであい</div><div class="fc-def">偶然的邂逅</div><div class="fc-ex">旅先で偶然の出会いがありました。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-
-    <!-- ── 第5回 ── -->
-    <div class="fc-wrap fc-v" data-lesson="5" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第5回 · 単語</div><div class="fc-word">さっぱりした</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">さっぱり</div><div class="fc-def">感覺清爽了</div><div class="fc-ex">髪を切ってさっぱりしました！</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="5" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第5回 · 単語</div><div class="fc-word">制限速度</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">せいげんそくど</div><div class="fc-def">速度限制</div><div class="fc-ex">高速道路の制限速度は100km/hです。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="5" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第5回 · 単語</div><div class="fc-word">罰金</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">ばっきん</div><div class="fc-def">罰款</div><div class="fc-ex">スピード違反で罰金を払いました。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="5" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第5回 · 単語</div><div class="fc-word">免許証</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">めんきょしょう</div><div class="fc-def">駕照</div><div class="fc-ex">日本でも免許証が必要です。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="5" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第5回 · 単語</div><div class="fc-word">燃費が良い</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">ねんぴがよい</div><div class="fc-def">省油（燃費が悪い＝耗油）</div><div class="fc-ex">このトヨタは燃費が良いです。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="5" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第5回 · 単語</div><div class="fc-word">軽自動車</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">けいじどうしゃ</div><div class="fc-def">輕型車（日本特有）</div><div class="fc-ex">日本では軽自動車がとても人気です。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="5" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第5回 · 単語</div><div class="fc-word">丈夫</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">じょうぶ</div><div class="fc-def">堅固耐用</div><div class="fc-ex">トヨタは丈夫で長持ちします。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-
-    <!-- ── 第6回 ── -->
-    <div class="fc-wrap fc-v" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 単語</div><div class="fc-word">月餅</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">げっぺい</div><div class="fc-def">月餅（中秋節お菓子）</div><div class="fc-ex">月餅は甘すぎます。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 単語</div><div class="fc-word">文旦</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">ぶんたん</div><div class="fc-def">文旦（大きな柑橘類）</div><div class="fc-ex">文旦の皮はむくのが大変です。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 単語</div><div class="fc-word">淹れる</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">いれる</div><div class="fc-def">（お茶・コーヒーを）沖泡</div><div class="fc-ex">コーヒーを自分で淹れました。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 単語</div><div class="fc-word">音読み</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">おんよみ</div><div class="fc-def">漢字的中文音（音讀）</div><div class="fc-ex">「今日」は音読みで「きょう」です。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 単語</div><div class="fc-word">訓読み</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">くんよみ</div><div class="fc-def">漢字的日語音（訓讀）</div><div class="fc-ex">「今」は訓読みで「いま」です。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 単語</div><div class="fc-word">繁体字</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">はんたいじ</div><div class="fc-def">台灣使用的傳統漢字</div><div class="fc-ex">台湾では繁体字を使います。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 単語</div><div class="fc-word">簡体字</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">かんたいじ</div><div class="fc-def">中國大陸的簡化漢字</div><div class="fc-ex">中国では簡体字を使います。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 単語</div><div class="fc-word">画数</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">かくすう</div><div class="fc-def">筆畫數</div><div class="fc-ex">「藤」は画数が多くて書くのが大変です。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 単語</div><div class="fc-word">天狗</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">てんぐ</div><div class="fc-def">日本妖怪（紅臉長鼻）</div><div class="fc-ex">天狗は赤い顔と長い鼻が特徴です。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 単語</div><div class="fc-word">猫車</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">ねこぐるま</div><div class="fc-def">獨輪手推車（工地用）</div><div class="fc-ex">猫車は工事現場で使う一輪車です。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-v" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 単語</div><div class="fc-word">おしぼり</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-reading">おてふき / お手拭き</div><div class="fc-def">濕紙巾、濕毛巾</div><div class="fc-ex">コンビニでおしぼりをもらいました。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-
-  </div><!-- /vocabGrid -->
+  <!-- ── 上下張 ── -->
+  <div class="study-nav">
+    <button class="nav-btn" onclick="prevCard()">← 上一張</button>
+    <button class="nav-btn primary" onclick="nextCard()">下一張 →</button>
+  </div>
+  <div style="display:none" id="vocabGrid"></div><!-- /vocabGrid hidden -->
 </div><!-- /card-section -->
-</div><!-- /view-vocab -->
-
-<!-- ════════════════════════════════════════
-     VIEW: 文法卡
-     ════════════════════════════════════════ -->
-<div id="view-gram" class="view">
-<div class="card-section">
-  <div class="filter-row" id="gFilterRow">
-    <button class="filter-btn active" onclick="filterCards('gram','all',this)">全部</button>
-    <button class="filter-btn" onclick="filterCards('gram','1',this)">第1回</button>
-    <button class="filter-btn" onclick="filterCards('gram','2',this)">第2回</button>
-    <button class="filter-btn" onclick="filterCards('gram','3',this)">第3回</button>
-    <button class="filter-btn" onclick="filterCards('gram','4',this)">第4回</button>
-    <button class="filter-btn" onclick="filterCards('gram','5',this)">第5回</button>
-    <button class="filter-btn" onclick="filterCards('gram','6',this)">第6回</button>
-  </div>
-  <div class="fc-toolbar">
-    <span class="card-count">顯示 <strong id="gramCount">0</strong> 張</span>
-    <button class="shuffle-btn" onclick="shuffleCards('gramGrid')">🔀 隨機排列</button>
-    <button class="shuffle-btn" onclick="resetAllFlip('gramGrid')">🔄 全部收起</button>
-  </div>
-  <div class="card-grid" id="gramGrid">
-
-    <!-- ── 第1回 ── -->
-    <div class="fc-wrap fc-g" data-lesson="1" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第1回 · 文法</div><div class="fc-gword">〜ことが むずかしい</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">做〜是困難的</div><div class="fc-g-ex">話すことがむずかしい。<br><span style="font-size:11px;color:var(--text-hint)">Speaking is difficult.</span></div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-g" data-lesson="1" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第1回 · 文法</div><div class="fc-gword">簡単な〜なら〜できます</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">如果是簡單的〜就能〜</div><div class="fc-g-ex">簡単な日本語なら聞き取れます。<br><span style="font-size:11px;color:var(--text-hint)">If it's simple Japanese, I can understand it.</span></div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-
-    <!-- ── 第2回 ── -->
-    <div class="fc-wrap fc-g" data-lesson="2" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第2回 · 文法</div><div class="fc-gword">〜と書いてあります</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">上面寫著〜（書寫存在狀態）</div><div class="fc-g-ex">２番ホーム、新宿方面と書いてあります。<br><span style="font-size:11px;color:var(--text-hint)">It says "Platform 2, towards Shinjuku."</span></div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-g" data-lesson="2" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第2回 · 文法</div><div class="fc-gword">〜が 飾ってあります<br>／置いてあります</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">擺放著〜（有人刻意放置的結果狀態）</div><div class="fc-g-ex">壁に桜の絵が飾ってあります。<br><span style="font-size:11px;color:var(--text-hint)">A picture is displayed on the wall.</span></div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-
-    <!-- ── 第3回 ── -->
-    <div class="fc-wrap fc-g" data-lesson="3" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第3回 · 文法</div><div class="fc-gword">A より B の方が〜</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">B 比 A 更〜（比較句型）</div><div class="fc-g-ex">私は電車より車の方が好きです。<br><span style="font-size:11px;color:var(--text-hint)">I like car more than train.</span></div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-g" data-lesson="3" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第3回 · 文法</div><div class="fc-gword">こういう ／ このような ／ これみたいな</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">像這樣的〜（口語程度：これみたいな＞こういう＞このような）</div><div class="fc-g-ex">最近このような健康にいいお弁当があります。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-
-    <!-- ── 第4回 ── -->
-    <div class="fc-wrap fc-g" data-lesson="4" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第4回 · 文法</div><div class="fc-gword">〜しないといけません</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">必須做〜 ／ I have to 〜</div><div class="fc-g-ex">早く寝ないといけません。<br><span style="font-size:11px;color:var(--text-hint)">I have to sleep early.</span></div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-g" data-lesson="4" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第4回 · 文法</div><div class="fc-gword">〜に〜回くらいの頻度で</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">每〜大約〜次的頻率</div><div class="fc-g-ex">１週間に２回くらいの頻度でレッスンをしています。</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-g" data-lesson="4" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第4回 · 文法</div><div class="fc-gword">〜に行ってから、〜に行きます</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">先去〜之後，再去〜（動作順序）</div><div class="fc-g-ex">美容院に行ってから、塾に行きます。<br><span style="font-size:11px;color:var(--text-hint)">After going to the salon, I go to cram school.</span></div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-
-    <!-- ── 第5回 ── -->
-    <div class="fc-wrap fc-g" data-lesson="5" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第5回 · 文法</div><div class="fc-gword">〜しか〜ません</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">只有〜（強調數量少）</div><div class="fc-g-ex">５時間半しか寝ていません。<br><span style="font-size:11px;color:var(--text-hint)">I only slept 5.5 hours.</span></div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-g" data-lesson="5" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第5回 · 文法</div><div class="fc-gword">〜ので、〜</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">因為〜，所以〜（客觀理由）</div><div class="fc-g-ex">毎日運転するので、燃費が良い車が一番いいです。<br><span style="font-size:11px;color:var(--text-hint)">Since I drive daily, a fuel-efficient car is best.</span></div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-g" data-lesson="5" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第5回 · 文法</div><div class="fc-gword">緩い（ゆるい）↔ 厳しい（きびしい）</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">寬鬆 ↔ 嚴格（形容規則、管理）</div><div class="fc-g-ex">台湾の方が規則が緩いと思います。<br><span style="font-size:11px;color:var(--text-hint)">I think Taiwan's rules are more lenient.</span></div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-
-    <!-- ── 第6回 ── -->
-    <div class="fc-wrap fc-g" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 文法</div><div class="fc-gword">〜ながら、〜</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">一邊〜一邊〜（同時進行兩個動作）</div><div class="fc-g-ex">コーヒーを飲みながら、クッキーを食べました。<br><span style="font-size:11px;color:var(--text-hint)">I ate cookies while drinking coffee.</span></div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-g" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 文法</div><div class="fc-gword">〜すぎます</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">太〜了（程度超過）</div><div class="fc-g-ex">月餅は甘すぎます。<br><span style="font-size:11px;color:var(--text-hint)">Mooncake is too sweet.</span></div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-g" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 文法</div><div class="fc-gword">〜はご利用ですか？<br>〜はお持ちですか？</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">〜要使用嗎？／〜有帶嗎？（コンビニの丁寧表現）</div><div class="fc-g-ex">袋はご利用ですか？<br>ポイントカードはお持ちですか？</div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-    <div class="fc-wrap fc-g" data-lesson="6" onclick="this.classList.toggle('flipped')">
-      <div class="fc"><div class="fc-front"><div class="fc-badge">第6回 · 文法</div><div class="fc-gword">〜はそのままで お願いします</div><div class="fc-tap">點擊翻面 →</div></div><div class="fc-back"><div class="fc-g-meaning">〜不用加熱，維持原樣就好</div><div class="fc-g-ex">お弁当はそのままでお願いします。<br><span style="font-size:11px;color:var(--text-hint)">Please leave the bento as is.</span></div><div class="fc-flip-hint">← 再次點擊</div></div></div>
-    </div>
-
-  </div><!-- /gramGrid -->
-</div><!-- /card-section -->
-</div><!-- /view-gram -->
+</div><!-- /view-cards -->
 
 <script>
   /* ── 課程筆記：切換課次 ── */
@@ -1676,56 +1542,157 @@ body {
     document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('view-' + id).classList.add('active');
     btn.classList.add('active');
-    // update card counts when switching to flash views
-    if (id === 'vocab') updateCount('vocabGrid','vocabCount');
-    if (id === 'gram')  updateCount('gramGrid','gramCount');
   }
 
-  /* ── 單字卡 / 文法卡：按課次篩選 ── */
-  function filterCards(type, lesson, btn) {
-    const gridId = type === 'vocab' ? 'vocabGrid' : 'gramGrid';
-    const countId = type === 'vocab' ? 'vocabCount' : 'gramCount';
-    // update filter buttons
-    const row = btn.closest('.filter-row');
-    row.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  /* ══════════════════════════════════════════
+     單字文法卡 — 資料（57 張）
+  ══════════════════════════════════════════ */
+  const CARDS = [
+    /* ── 第1回 · 単語 ── */
+    {lesson:1,type:'vocab',badge:'第1回 · 単語',front:'5泊6日',audioFront:'ごはく むいか',reading:'ごはく むいか',def:'5晚6天（旅行天數說法）',ex:'5泊6日の旅行をしました。'},
+    {lesson:1,type:'vocab',badge:'第1回 · 単語',front:'大人',audioFront:'おとな',reading:'おとな',def:'大人、成人',ex:'大人二人でホテルを予約しました。'},
+    {lesson:1,type:'vocab',badge:'第1回 · 単語',front:'後ろ',audioFront:'うしろ',reading:'うしろ',def:'後面、後方',ex:'後ろに大きな看板があります。'},
+    {lesson:1,type:'vocab',badge:'第1回 · 単語',front:'文法',audioFront:'ぶんぽう',reading:'ぶんぽう',def:'文法 Grammar',ex:'文法を毎日練習しています。'},
+    /* ── 第2回 · 単語 ── */
+    {lesson:2,type:'vocab',badge:'第2回 · 単語',front:'券売機',audioFront:'けんばいき',reading:'けんばいき',def:'自動售票機',ex:'券売機で切符を買います。'},
+    {lesson:2,type:'vocab',badge:'第2回 · 単語',front:'切符',audioFront:'きっぷ',reading:'きっぷ',def:'車票',ex:'新幹線の切符を一枚ください。'},
+    {lesson:2,type:'vocab',badge:'第2回 · 単語',front:'ホーム',audioFront:'ホーム',reading:'ほーむ（月台）',def:'月台 platform',ex:'２番ホームで電車を待っています。'},
+    {lesson:2,type:'vocab',badge:'第2回 · 単語',front:'受付',audioFront:'うけつけ',reading:'うけつけ',def:'接待處、前台',ex:'ホテルの受付でチェックインします。'},
+    {lesson:2,type:'vocab',badge:'第2回 · 単語',front:'鍵を渡す',audioFront:'鍵を渡す',reading:'かぎをわたす',def:'交鑰匙',ex:'フロントが鍵を渡してくれました。'},
+    {lesson:2,type:'vocab',badge:'第2回 · 単語',front:'案内をする',audioFront:'案内をする',reading:'あんないをする',def:'引導、介紹',ex:'スタッフが部屋まで案内をしてくれました。'},
+    /* ── 第3回 · 単語 ── */
+    {lesson:3,type:'vocab',badge:'第3回 · 単語',front:'最寄り駅',audioFront:'最寄り駅',reading:'もよりえき',def:'離家最近的車站',ex:'私の最寄り駅は台中駅です。'},
+    {lesson:3,type:'vocab',badge:'第3回 · 単語',front:'竹細工',audioFront:'竹細工',reading:'たけざいく',def:'竹工藝',ex:'白川郷で竹細工を体験しました。'},
+    {lesson:3,type:'vocab',badge:'第3回 · 単語',front:'招き猫',audioFront:'招き猫',reading:'まねきねこ',def:'招財貓',ex:'お土産屋さんに招き猫がたくさんあります。'},
+    {lesson:3,type:'vocab',badge:'第3回 · 単語',front:'和紙',audioFront:'わし',reading:'わし',def:'日本傳統紙',ex:'和紙は白川郷の伝統工芸です。'},
+    {lesson:3,type:'vocab',badge:'第3回 · 単語',front:'伝統工芸',audioFront:'伝統工芸',reading:'でんとうこうげい',def:'傳統工藝',ex:'地元の伝統工芸を体験しました。'},
+    {lesson:3,type:'vocab',badge:'第3回 · 単語',front:'地場のもの',audioFront:'地場のもの',reading:'じばのもの',def:'當地特有的物品',ex:'地場のものをお土産に買いました。'},
+    /* ── 第4回 · 単語 ── */
+    {lesson:4,type:'vocab',badge:'第4回 · 単語',front:'頻度',audioFront:'ひんど',reading:'ひんど',def:'頻率 frequency',ex:'どのくらいの頻度で行きますか？'},
+    {lesson:4,type:'vocab',badge:'第4回 · 単語',front:'お義母さん',audioFront:'お義母さん',reading:'おかあさん / ぎぼ',def:'岳母、婆婆',ex:'子供をお義母さんに預けました。'},
+    {lesson:4,type:'vocab',badge:'第4回 · 単語',front:'預ける',audioFront:'あずける',reading:'あずける',def:'寄放、托付',ex:'毎週、子供を義母に預けます。'},
+    {lesson:4,type:'vocab',badge:'第4回 · 単語',front:'免税',audioFront:'めんぜい',reading:'めんぜい',def:'免稅 duty-free',ex:'免税でコスメを買いました。'},
+    {lesson:4,type:'vocab',badge:'第4回 · 単語',front:'好奇心旺盛',audioFront:'好奇心旺盛',reading:'こうきしんおうせい',def:'充滿好奇心',ex:'私は好奇心旺盛な人間です。'},
+    {lesson:4,type:'vocab',badge:'第4回 · 単語',front:'職人',audioFront:'しょくにん',reading:'しょくにん',def:'工匠、師傅',ex:'職人が丁寧に和菓子を作っています。'},
+    {lesson:4,type:'vocab',badge:'第4回 · 単語',front:'偶然の出会い',audioFront:'偶然の出会い',reading:'ぐうぜんのであい',def:'偶然的邂逅',ex:'旅先で偶然の出会いがありました。'},
+    /* ── 第5回 · 単語 ── */
+    {lesson:5,type:'vocab',badge:'第5回 · 単語',front:'さっぱりした',audioFront:'さっぱりした',reading:'さっぱり',def:'感覺清爽了',ex:'髪を切ってさっぱりしました！'},
+    {lesson:5,type:'vocab',badge:'第5回 · 単語',front:'制限速度',audioFront:'制限速度',reading:'せいげんそくど',def:'速度限制',ex:'高速道路の制限速度は100km/hです。'},
+    {lesson:5,type:'vocab',badge:'第5回 · 単語',front:'罰金',audioFront:'ばっきん',reading:'ばっきん',def:'罰款',ex:'スピード違反で罰金を払いました。'},
+    {lesson:5,type:'vocab',badge:'第5回 · 単語',front:'免許証',audioFront:'免許証',reading:'めんきょしょう',def:'駕照',ex:'日本でも免許証が必要です。'},
+    {lesson:5,type:'vocab',badge:'第5回 · 単語',front:'燃費が良い',audioFront:'燃費が良い',reading:'ねんぴがよい',def:'省油（燃費が悪い＝耗油）',ex:'このトヨタは燃費が良いです。'},
+    {lesson:5,type:'vocab',badge:'第5回 · 単語',front:'軽自動車',audioFront:'軽自動車',reading:'けいじどうしゃ',def:'輕型車（日本特有）',ex:'日本では軽自動車がとても人気です。'},
+    {lesson:5,type:'vocab',badge:'第5回 · 単語',front:'丈夫',audioFront:'じょうぶ',reading:'じょうぶ',def:'堅固耐用',ex:'トヨタは丈夫で長持ちします。'},
+    /* ── 第6回 · 単語 ── */
+    {lesson:6,type:'vocab',badge:'第6回 · 単語',front:'月餅',audioFront:'月餅',reading:'げっぺい',def:'月餅（中秋節お菓子）',ex:'月餅は甘すぎます。'},
+    {lesson:6,type:'vocab',badge:'第6回 · 単語',front:'文旦',audioFront:'文旦',reading:'ぶんたん',def:'文旦（大きな柑橘類）',ex:'文旦の皮はむくのが大変です。'},
+    {lesson:6,type:'vocab',badge:'第6回 · 単語',front:'淹れる',audioFront:'いれる',reading:'いれる',def:'（お茶・コーヒーを）沖泡',ex:'コーヒーを自分で淹れました。'},
+    {lesson:6,type:'vocab',badge:'第6回 · 単語',front:'音読み',audioFront:'おんよみ',reading:'おんよみ',def:'漢字的中文音（音讀）',ex:'「今日」は音読みで「きょう」です。'},
+    {lesson:6,type:'vocab',badge:'第6回 · 単語',front:'訓読み',audioFront:'くんよみ',reading:'くんよみ',def:'漢字的日語音（訓讀）',ex:'「今」は訓読みで「いま」です。'},
+    {lesson:6,type:'vocab',badge:'第6回 · 単語',front:'繁体字',audioFront:'繁体字',reading:'はんたいじ',def:'台灣使用的傳統漢字',ex:'台湾では繁体字を使います。'},
+    {lesson:6,type:'vocab',badge:'第6回 · 単語',front:'簡体字',audioFront:'簡体字',reading:'かんたいじ',def:'中國大陸的簡化漢字',ex:'中国では簡体字を使います。'},
+    {lesson:6,type:'vocab',badge:'第6回 · 単語',front:'画数',audioFront:'かくすう',reading:'かくすう',def:'筆畫數',ex:'「藤」は画数が多くて書くのが大変です。'},
+    {lesson:6,type:'vocab',badge:'第6回 · 単語',front:'天狗',audioFront:'てんぐ',reading:'てんぐ',def:'日本妖怪（紅臉長鼻）',ex:'天狗は赤い顔と長い鼻が特徴です。'},
+    {lesson:6,type:'vocab',badge:'第6回 · 単語',front:'猫車',audioFront:'ねこぐるま',reading:'ねこぐるま',def:'獨輪手推車（工地用）',ex:'猫車は工事現場で使う一輪車です。'},
+    {lesson:6,type:'vocab',badge:'第6回 · 単語',front:'おしぼり',audioFront:'おしぼり',reading:'おてふき / お手拭き',def:'濕紙巾、濕毛巾',ex:'コンビニでおしぼりをもらいました。'},
+    /* ── 第1回 · 文法 ── */
+    {lesson:1,type:'gram',badge:'第1回 · 文法',front:'〜ことが むずかしい',audioFront:'〜ことがむずかしい',reading:'',def:'做〜是困難的',ex:'話すことがむずかしい。'},
+    {lesson:1,type:'gram',badge:'第1回 · 文法',front:'簡単な〜なら〜できます',audioFront:'簡単な〜なら〜できます',reading:'',def:'如果是簡單的〜就能〜',ex:'簡単な日本語なら聞き取れます。'},
+    /* ── 第2回 · 文法 ── */
+    {lesson:2,type:'gram',badge:'第2回 · 文法',front:'〜と書いてあります',audioFront:'〜と書いてあります',reading:'',def:'上面寫著〜（書寫存在狀態）',ex:'２番ホーム、新宿方面と書いてあります。'},
+    {lesson:2,type:'gram',badge:'第2回 · 文法',front:'〜が飾ってあります ／ 置いてあります',audioFront:'〜が飾ってあります',reading:'',def:'擺放著〜（有人刻意放置的結果狀態）',ex:'壁に桜の絵が飾ってあります。'},
+    /* ── 第3回 · 文法 ── */
+    {lesson:3,type:'gram',badge:'第3回 · 文法',front:'A より B の方が〜',audioFront:'AよりBの方が〜',reading:'',def:'B 比 A 更〜（比較句型）',ex:'私は電車より車の方が好きです。'},
+    {lesson:3,type:'gram',badge:'第3回 · 文法',front:'こういう ／ このような ／ これみたいな',audioFront:'こういう、このような、これみたいな',reading:'',def:'像這樣的〜（口語：これみたいな＞こういう＞このような）',ex:'最近このような健康にいいお弁当があります。'},
+    /* ── 第4回 · 文法 ── */
+    {lesson:4,type:'gram',badge:'第4回 · 文法',front:'〜しないといけません',audioFront:'〜しないといけません',reading:'',def:'必須做〜 ／ I have to 〜',ex:'早く寝ないといけません。'},
+    {lesson:4,type:'gram',badge:'第4回 · 文法',front:'〜に〜回くらいの頻度で',audioFront:'〜に〜回くらいの頻度で',reading:'',def:'每〜大約〜次的頻率',ex:'１週間に２回くらいの頻度でレッスンをしています。'},
+    {lesson:4,type:'gram',badge:'第4回 · 文法',front:'〜に行ってから、〜に行きます',audioFront:'〜に行ってから〜に行きます',reading:'',def:'先去〜之後，再去〜（動作順序）',ex:'美容院に行ってから、塾に行きます。'},
+    /* ── 第5回 · 文法 ── */
+    {lesson:5,type:'gram',badge:'第5回 · 文法',front:'〜しか〜ません',audioFront:'〜しか〜ません',reading:'',def:'只有〜（強調數量少）',ex:'５時間半しか寝ていません。'},
+    {lesson:5,type:'gram',badge:'第5回 · 文法',front:'〜ので、〜',audioFront:'〜ので〜',reading:'',def:'因為〜，所以〜（客觀理由）',ex:'毎日運転するので、燃費が良い車が一番いいです。'},
+    {lesson:5,type:'gram',badge:'第5回 · 文法',front:'緩い（ゆるい）↔ 厳しい（きびしい）',audioFront:'緩い、厳しい',reading:'',def:'寬鬆 ↔ 嚴格（形容規則、管理）',ex:'台湾の方が規則が緩いと思います。'},
+    /* ── 第6回 · 文法 ── */
+    {lesson:6,type:'gram',badge:'第6回 · 文法',front:'〜ながら、〜',audioFront:'〜ながら〜',reading:'',def:'一邊〜一邊〜（同時進行兩個動作）',ex:'コーヒーを飲みながら、クッキーを食べました。'},
+    {lesson:6,type:'gram',badge:'第6回 · 文法',front:'〜すぎます',audioFront:'〜すぎます',reading:'',def:'太〜了（程度超過）',ex:'月餅は甘すぎます。'},
+    {lesson:6,type:'gram',badge:'第6回 · 文法',front:'〜はご利用ですか？ ／ 〜はお持ちですか？',audioFront:'〜はご利用ですか、〜はお持ちですか',reading:'',def:'〜要使用嗎？／〜有帶嗎？（コンビニの丁寧表現）',ex:'袋はご利用ですか？ポイントカードはお持ちですか？'},
+    {lesson:6,type:'gram',badge:'第6回 · 文法',front:'〜はそのままで お願いします',audioFront:'〜はそのままでお願いします',reading:'',def:'〜不用加熱，維持原樣就好',ex:'お弁当はそのままでお願いします。'},
+  ];
+
+  let deck = [...CARDS], idx = 0;
+
+  /* ── 語音（Web Speech API） ── */
+  function speak(text) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ja-JP';
+    u.rate = 0.85;
+    window.speechSynthesis.speak(u);
+  }
+  function speakFront() { speak(deck[idx].audioFront); }
+  function speakBack()  { speak(deck[idx].ex); }
+
+  /* ── 渲染目前卡片 ── */
+  function renderCard() {
+    const c = deck[idx];
+    const wrap = document.getElementById('studyCard');
+    // reset flip + type colour class
+    wrap.classList.remove('flipped', 'fc-v', 'fc-g');
+    wrap.classList.add(c.type === 'vocab' ? 'fc-v' : 'fc-g');
+    // badge
+    document.getElementById('cardBadge').textContent = c.badge;
+    // front word – swap class for vocab vs gram size
+    const wordEl = document.getElementById('cardWord');
+    wordEl.className = c.type === 'vocab' ? 'fc-word' : 'fc-gword';
+    wordEl.textContent = c.front;
+    // back
+    document.getElementById('cardReading').textContent = c.reading;
+    document.getElementById('cardDef').textContent     = c.def;
+    document.getElementById('cardEx').textContent      = c.ex;
+    // counter
+    document.getElementById('cardCounter').textContent = `第 ${idx + 1} / ${deck.length} 張`;
+  }
+
+  /* ── 翻牌（翻到背面時自動朗讀例句） ── */
+  function flipCard() {
+    const wrap = document.getElementById('studyCard');
+    const toBack = !wrap.classList.contains('flipped');
+    wrap.classList.toggle('flipped');
+    if (toBack) speak(deck[idx].ex);
+  }
+
+  /* ── 上一張 ／ 下一張 ── */
+  function nextCard() { idx = (idx + 1) % deck.length;              renderCard(); }
+  function prevCard() { idx = (idx - 1 + deck.length) % deck.length; renderCard(); }
+
+  /* ── 篩選 ── */
+  function setFilter(f, btn) {
+    document.querySelectorAll('#cardFilterRow .filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    // show/hide cards
-    document.querySelectorAll('#' + gridId + ' .fc-wrap').forEach(card => {
-      const show = lesson === 'all' || card.dataset.lesson === lesson;
-      card.classList.toggle('fc-hidden', !show);
-    });
-    updateCount(gridId, countId);
+    if      (f === 'all')   deck = [...CARDS];
+    else if (f === 'vocab') deck = CARDS.filter(c => c.type === 'vocab');
+    else if (f === 'gram')  deck = CARDS.filter(c => c.type === 'gram');
+    else { const n = parseInt(f.slice(1)); deck = CARDS.filter(c => c.lesson === n); }
+    idx = 0;
+    renderCard();
   }
 
-  function updateCount(gridId, countId) {
-    const visible = document.querySelectorAll('#' + gridId + ' .fc-wrap:not(.fc-hidden)').length;
-    document.getElementById(countId).textContent = visible;
-  }
-
-  /* ── 隨機排列 ── */
-  function shuffleCards(gridId) {
-    const grid = document.getElementById(gridId);
-    const cards = [...grid.children];
-    for (let i = cards.length - 1; i > 0; i--) {
+  /* ── 洗牌 ── */
+  function shuffleDeck() {
+    for (let i = deck.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      grid.insertBefore(cards[j], cards[i]);
-      [cards[i], cards[j]] = [cards[j], cards[i]];
+      [deck[i], deck[j]] = [deck[j], deck[i]];
     }
-  }
-
-  /* ── 全部收起（翻回正面）── */
-  function resetAllFlip(gridId) {
-    document.querySelectorAll('#' + gridId + ' .fc-wrap').forEach(c => c.classList.remove('flipped'));
+    idx = 0;
+    renderCard();
   }
 
   /* ── 初始化 ── */
   (function() {
-    // 課程數自動更新
-    const sel = document.getElementById('lessonSelect');
-    document.getElementById('totalCount').textContent = sel.options.length;
-    // 卡片初始計數
-    updateCount('vocabGrid','vocabCount');
-    updateCount('gramGrid','gramCount');
+    document.getElementById('totalCount').textContent =
+      document.getElementById('lessonSelect').options.length;
+    renderCard();
   })();
 </script>
 
