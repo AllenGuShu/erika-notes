@@ -202,7 +202,82 @@ body {
   font-weight: 600;
   margin-bottom: 3px;
 }
-.lesson-desc { font-size: 13px; color: var(--text-sub); margin-bottom: 20px; }
+.lesson-desc { font-size: 13px; color: var(--text-sub); margin-bottom: 16px; }
+
+/* ════════════════════════════════════════
+   LESSON SUMMARY CARD（重點整理卡）
+   ════════════════════════════════════════ */
+.lesson-summary {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 15px 18px 14px;
+  margin-bottom: 18px;
+}
+.ls-head {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-hint);
+  margin-bottom: 10px;
+}
+.ls-situation {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.6;
+  border-left: 3px solid var(--tab-ink);
+  padding-left: 10px;
+  margin-bottom: 13px;
+}
+.ls-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 18px;
+  margin-bottom: 11px;
+}
+.ls-col-head {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-hint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.ls-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+.pill-v {
+  background: var(--vocab-bg);
+  color: var(--vocab-fg);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: 'Noto Serif JP', serif;
+  white-space: nowrap;
+}
+.pill-g {
+  background: var(--gram-bg);
+  color: var(--gram-fg);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: 'Noto Serif JP', serif;
+  white-space: nowrap;
+}
+.ls-tip {
+  font-size: 12px;
+  color: var(--text-sub);
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 8px 12px;
+  line-height: 1.65;
+  border: 1px solid var(--border);
+}
+.ls-tip strong { color: var(--tab-ink); }
+@media (max-width: 480px) {
+  .ls-grid { grid-template-columns: 1fr; }
+}
 
 /* ════════════════════════════════════════
    ACCORDION SECTIONS
@@ -678,6 +753,31 @@ body {
   <div class="lesson-theme">第1回 ― 自己紹介・日本語学習の目標</div>
   <div class="lesson-desc">初回レッスン。自分のレベルや学習目標を日本語で伝える練習。</div>
 
+  <!-- 重點整理卡 -->
+  <div class="lesson-summary">
+    <div class="ls-head">📋 本課重點整理</div>
+    <div class="ls-situation">🎯 用日語說出自己的旅遊經歷與學習目標，練習基本助詞串連句子</div>
+    <div class="ls-grid">
+      <div>
+        <div class="ls-col-head">🗝️ 核心單字</div>
+        <div class="ls-pills">
+          <span class="pill-v">5泊6日</span>
+          <span class="pill-v">大人</span>
+          <span class="pill-v">後ろ</span>
+          <span class="pill-v">文法</span>
+        </div>
+      </div>
+      <div>
+        <div class="ls-col-head">✏️ 核心文法</div>
+        <div class="ls-pills">
+          <span class="pill-g">〜ことがむずかしい</span>
+          <span class="pill-g">簡単な〜なら〜できます</span>
+        </div>
+      </div>
+    </div>
+    <div class="ls-tip">💡 <strong>記憶法：</strong>「むずかしい」前面放動詞辭書形＋「こと」→ 把動作「名詞化」再說難不難。</div>
+  </div>
+
   <!-- 老師反饋 -->
   <details class="accord fb" open>
     <summary><span class="sec-icon">📋</span><span class="sec-label">老師反饋</span><span class="accord-chevron">▶</span></summary>
@@ -771,6 +871,33 @@ body {
 <div class="lesson-panel">
   <div class="lesson-theme">第2回 ― 時間表現・駅・ホテル・日常生活</div>
   <div class="lesson-desc">時刻・場所の描写、ホテルチェックインシーン、生活リズムのフリートーク。</div>
+
+  <!-- 重點整理卡 -->
+  <div class="lesson-summary">
+    <div class="ls-head">📋 本課重點整理</div>
+    <div class="ls-situation">🎯 在車站買票、確認月台、進飯店 Check-in，學會描述「標示上寫著什麼」</div>
+    <div class="ls-grid">
+      <div>
+        <div class="ls-col-head">🗝️ 核心單字</div>
+        <div class="ls-pills">
+          <span class="pill-v">券売機</span>
+          <span class="pill-v">切符</span>
+          <span class="pill-v">ホーム</span>
+          <span class="pill-v">受付</span>
+          <span class="pill-v">鍵を渡す</span>
+          <span class="pill-v">案内をする</span>
+        </div>
+      </div>
+      <div>
+        <div class="ls-col-head">✏️ 核心文法</div>
+        <div class="ls-pills">
+          <span class="pill-g">〜と書いてあります</span>
+          <span class="pill-g">〜が飾ってあります</span>
+        </div>
+      </div>
+    </div>
+    <div class="ls-tip">💡 <strong>記憶法：</strong>「〜てあります」＝有人刻意做了某事、結果還在眼前。（書いてある＝已寫好的字就在那裡）</div>
+  </div>
 
   <!-- 老師反饋 -->
   <details class="accord fb" open>
@@ -873,6 +1000,33 @@ body {
 <div class="lesson-panel">
   <div class="lesson-theme">第3回 ― 交通比較・食べ物・外食・お土産</div>
   <div class="lesson-desc">比較表現、レストランでの会話、土産屋シーン、北陸旅行体験（白川郷・竹細工など）。</div>
+
+  <!-- 重點整理卡 -->
+  <div class="lesson-summary">
+    <div class="ls-head">📋 本課重點整理</div>
+    <div class="ls-situation">🎯 介紹白川郷景點、比較交通方式、在土產店購物，學會「比較」句型與指示代名詞</div>
+    <div class="ls-grid">
+      <div>
+        <div class="ls-col-head">🗝️ 核心單字</div>
+        <div class="ls-pills">
+          <span class="pill-v">最寄り駅</span>
+          <span class="pill-v">竹細工</span>
+          <span class="pill-v">招き猫</span>
+          <span class="pill-v">和紙</span>
+          <span class="pill-v">伝統工芸</span>
+          <span class="pill-v">地場のもの</span>
+        </div>
+      </div>
+      <div>
+        <div class="ls-col-head">✏️ 核心文法</div>
+        <div class="ls-pills">
+          <span class="pill-g">AよりBの方が〜</span>
+          <span class="pill-g">こういう／このような</span>
+        </div>
+      </div>
+    </div>
+    <div class="ls-tip">💡 <strong>記憶法：</strong>「AよりBの方が」就是中文「比A…，B更…」，B放在「方が」前面是主角，先記B再記A。</div>
+  </div>
 
   <!-- 老師反饋 -->
   <details class="accord fb" open>
@@ -982,6 +1136,35 @@ body {
 <div class="lesson-panel">
   <div class="lesson-theme">第4回 ― 日常生活・家族・日本でのショッピング・文化体験</div>
   <div class="lesson-desc">頻度表現、義理の家族の呼び方、免税ショッピング、職人表現、擬音語、好奇心旺盛な表現。</div>
+
+  <!-- 重點整理卡 -->
+  <div class="lesson-summary">
+    <div class="ls-head">📋 本課重點整理</div>
+    <div class="ls-situation">🎯 描述日常習慣頻率、照顧家人的行程安排、日本購物免稅體驗</div>
+    <div class="ls-grid">
+      <div>
+        <div class="ls-col-head">🗝️ 核心單字</div>
+        <div class="ls-pills">
+          <span class="pill-v">頻度</span>
+          <span class="pill-v">お義母さん</span>
+          <span class="pill-v">預ける</span>
+          <span class="pill-v">免税</span>
+          <span class="pill-v">好奇心旺盛</span>
+          <span class="pill-v">職人</span>
+          <span class="pill-v">偶然の出会い</span>
+        </div>
+      </div>
+      <div>
+        <div class="ls-col-head">✏️ 核心文法</div>
+        <div class="ls-pills">
+          <span class="pill-g">〜しないといけません</span>
+          <span class="pill-g">〜に〜回くらいの頻度で</span>
+          <span class="pill-g">〜に行ってから〜に行きます</span>
+        </div>
+      </div>
+    </div>
+    <div class="ls-tip">💡 <strong>記憶法：</strong>「頻度」就是問多久做一次，搭配「〜に〜回くらい」一句話說清楚頻率，超實用！</div>
+  </div>
 
   <!-- 老師反饋 -->
   <details class="accord fb" open>
@@ -1103,6 +1286,35 @@ body {
 <div class="lesson-panel">
   <div class="lesson-theme">第5回 ― 通勤・台湾と日本の車事情・スラング「めっちゃ」</div>
   <div class="lesson-desc">台北→台中の深夜移動、交通ルールの比較、車購入体験、関西弁スラングの導入。</div>
+
+  <!-- 重點整理卡 -->
+  <div class="lesson-summary">
+    <div class="ls-head">📋 本課重點整理</div>
+    <div class="ls-situation">🎯 聊台灣與日本的交通規則差異、分享購車經驗、學習「只有」的強調用法</div>
+    <div class="ls-grid">
+      <div>
+        <div class="ls-col-head">🗝️ 核心單字</div>
+        <div class="ls-pills">
+          <span class="pill-v">さっぱりした</span>
+          <span class="pill-v">制限速度</span>
+          <span class="pill-v">罰金</span>
+          <span class="pill-v">免許証</span>
+          <span class="pill-v">燃費が良い</span>
+          <span class="pill-v">軽自動車</span>
+          <span class="pill-v">丈夫</span>
+        </div>
+      </div>
+      <div>
+        <div class="ls-col-head">✏️ 核心文法</div>
+        <div class="ls-pills">
+          <span class="pill-g">〜しか〜ません</span>
+          <span class="pill-g">〜ので〜</span>
+          <span class="pill-g">緩い ↔ 厳しい</span>
+        </div>
+      </div>
+    </div>
+    <div class="ls-tip">💡 <strong>記憶法：</strong>「〜しか〜ません」強調「只有」，帶有比預期少的驚訝語氣，例：100円しかない＝只剩100圓了。</div>
+  </div>
 
   <!-- 老師反饋 -->
   <details class="accord fb" open>
@@ -1241,6 +1453,40 @@ body {
 <div class="lesson-panel">
   <div class="lesson-theme">第6回 ― 漢字の読み方・助数詞・コンビニ会話</div>
   <div class="lesson-desc">中秋節の話題から始まり、音読み・訓読み、繁体字・簡体字の比較、コンビニでの実用会話、助数詞まで幅広く学習。</div>
+
+  <!-- 重點整理卡 -->
+  <div class="lesson-summary">
+    <div class="ls-head">📋 本課重點整理</div>
+    <div class="ls-situation">🎯 從中秋節聊到台日漢字差異、音訓讀，再到便利商店實用對話</div>
+    <div class="ls-grid">
+      <div>
+        <div class="ls-col-head">🗝️ 核心單字</div>
+        <div class="ls-pills">
+          <span class="pill-v">月餅</span>
+          <span class="pill-v">文旦</span>
+          <span class="pill-v">淹れる</span>
+          <span class="pill-v">音読み</span>
+          <span class="pill-v">訓読み</span>
+          <span class="pill-v">繁体字</span>
+          <span class="pill-v">簡体字</span>
+          <span class="pill-v">画数</span>
+          <span class="pill-v">天狗</span>
+          <span class="pill-v">猫車</span>
+          <span class="pill-v">おしぼり</span>
+        </div>
+      </div>
+      <div>
+        <div class="ls-col-head">✏️ 核心文法</div>
+        <div class="ls-pills">
+          <span class="pill-g">〜ながら〜</span>
+          <span class="pill-g">〜すぎます</span>
+          <span class="pill-g">〜はご利用ですか</span>
+          <span class="pill-g">〜はそのままでお願いします</span>
+        </div>
+      </div>
+    </div>
+    <div class="ls-tip">💡 <strong>記憶法：</strong>「ながら」＝同時進行兩件事（音楽を聴きながら勉強する）；「すぎます」＝用來誇張「太…了」，甜太甜、貴太貴都好用！</div>
+  </div>
 
   <!-- 老師反饋 -->
   <details class="accord fb" open>
