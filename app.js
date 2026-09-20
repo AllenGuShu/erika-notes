@@ -115,3 +115,15 @@ window.prevCard      = prevCard;
 window.shuffleDeck   = shuffleDeck;
 window.speakFront    = speakFront;
 window.speakBack     = speakBack;
+
+function selectChoice(el, isCorrect) {
+  const item = el.closest('.quiz-item');
+  if (item.querySelector('.correct, .wrong')) return; // already answered
+  el.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) {
+    const correct = item.querySelector('[onclick*="true"]');
+    if (correct) correct.classList.add('correct');
+  }
+  item.querySelector('.quiz-ans-block').classList.add('show');
+}
+window.selectChoice = selectChoice;
