@@ -1,0 +1,685 @@
+/* ════════════════════════════════════════
+   TOKEN SYSTEM
+   ════════════════════════════════════════ */
+:root {
+  --bg:          #F4F0E6;
+  --surface:     #FDFAF3;
+  --surface2:    #EDE8D4;
+  --border:      #DDD6C2;
+  --text:        #1B1814;
+  --text-sub:    #6B6355;
+  --text-hint:   #A09587;
+
+  /* section colors */
+  --vocab-bg:    #EBF0FB; --vocab-fg:  #2E5FA3; --vocab-bar: #2E5FA3;
+  --gram-bg:     #E8F3EC; --gram-fg:   #2E6644; --gram-bar:  #3A7A52;
+  --phrase-bg:   #FBF3E4; --phrase-fg: #8C5A1C; --phrase-bar:#B07430;
+  --ext-bg:      #F2EBF5; --ext-fg:    #5C3A7A; --ext-bar:   #7A4FA3;
+  --fb-bg:       #EAEDDB; --fb-fg:     #3A4E18; --fb-bar:    #5A7028;
+  --hw-bg:       #E8F2F5; --hw-fg:     #1A4C5A; --hw-bar:    #2A7090;
+
+  --tab-ink:     #2E5FA3;
+  --tag-r:       4px;
+  --card-r:      10px;
+  --accord-r:    8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #16130E; --surface:   #211E17; --surface2:  #2A2620; --border: #3A3528;
+    --text:      #EDE9DF; --text-sub:  #AFA799; --text-hint: #6E6457;
+    --vocab-bg:  #1A2640; --vocab-fg:  #7AAEE8; --vocab-bar: #5A92D4;
+    --gram-bg:   #162A1E; --gram-fg:   #72C48A; --gram-bar:  #5AAF74;
+    --phrase-bg: #2A1E0A; --phrase-fg: #E0A85A; --phrase-bar:#CC8A3A;
+    --ext-bg:    #1E1228; --ext-fg:    #B890E0; --ext-bar:   #9E6EC8;
+    --fb-bg:     #1C2210; --fb-fg:     #B0C870; --fb-bar:    #7A9E38;
+    --hw-bg:     #0E2028; --hw-fg:     #70C0D8; --hw-bar:    #3A90B0;
+    --tab-ink:   #7AAEE8;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #16130E; --surface:   #211E17; --surface2:  #2A2620; --border: #3A3528;
+  --text:      #EDE9DF; --text-sub:  #AFA799; --text-hint: #6E6457;
+  --vocab-bg:  #1A2640; --vocab-fg:  #7AAEE8; --vocab-bar: #5A92D4;
+  --gram-bg:   #162A1E; --gram-fg:   #72C48A; --gram-bar:  #5AAF74;
+  --phrase-bg: #2A1E0A; --phrase-fg: #E0A85A; --phrase-bar:#CC8A3A;
+  --ext-bg:    #1E1228; --ext-fg:    #B890E0; --ext-bar:   #9E6EC8;
+  --fb-bg:     #1C2210; --fb-fg:     #B0C870; --fb-bar:    #7A9E38;
+  --hw-bg:     #0E2028; --hw-fg:     #70C0D8; --hw-bar:    #3A90B0;
+  --tab-ink:   #7AAEE8;
+}
+
+/* ════════════════════════════════════════
+   BASE
+   ════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding-inline: 20px;
+  padding-block: 28px 64px;
+  min-height: 100vh;
+  line-height: 1.7;
+}
+
+/* ════════════════════════════════════════
+   PAGE HEADER
+   ════════════════════════════════════════ */
+.page-header {
+  max-width: 860px;
+  margin: 0 auto 28px;
+}
+.page-eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-hint);
+  margin-bottom: 8px;
+}
+.page-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(22px, 4vw, 36px);
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.page-title em { color: var(--tab-ink); font-style: normal; }
+.page-meta { margin-top: 8px; font-size: 15px; color: var(--text-sub); }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-sub);
+}
+.legend-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+/* ════════════════════════════════════════
+   LESSON SELECTOR (dropdown nav)
+   ════════════════════════════════════════ */
+.tabs-wrapper { max-width: 860px; margin: 0 auto; }
+
+.lesson-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.lesson-nav-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-hint);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.lesson-select-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+  max-width: 460px;
+}
+
+.lesson-select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 40px 10px 14px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.16s;
+}
+
+.lesson-select:focus,
+.lesson-select:hover {
+  border-color: var(--tab-ink);
+}
+
+/* custom chevron */
+.lesson-select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--text-hint);
+  pointer-events: none;
+}
+
+.lesson-counter {
+  font-size: 14px;
+  color: var(--text-hint);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.lesson-counter strong { color: var(--tab-ink); font-variant-numeric: tabular-nums; }
+
+/* ════════════════════════════════════════
+   LESSON PANELS
+   ════════════════════════════════════════ */
+.lesson-panel { display: none; }
+.lesson-panel.active { display: block; }
+
+.lesson-theme {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+.lesson-desc { font-size: 15px; color: var(--text-sub); margin-bottom: 16px; }
+
+/* ════════════════════════════════════════
+   LESSON SUMMARY CARD（重點整理卡）
+   ════════════════════════════════════════ */
+.lesson-summary {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 15px 18px 14px;
+  margin-bottom: 18px;
+}
+.ls-head {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-hint);
+  margin-bottom: 10px;
+}
+.ls-situation {
+  font-size: 15px;
+  color: var(--text-sub);
+  line-height: 1.6;
+  border-left: 3px solid var(--tab-ink);
+  padding-left: 10px;
+  margin-bottom: 13px;
+}
+.ls-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 18px;
+  margin-bottom: 11px;
+}
+.ls-col-head {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-hint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.ls-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+.pill-v {
+  background: var(--vocab-bg);
+  color: var(--vocab-fg);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: 'Noto Serif JP', serif;
+  white-space: nowrap;
+}
+.pill-g {
+  background: var(--gram-bg);
+  color: var(--gram-fg);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: 'Noto Serif JP', serif;
+  white-space: nowrap;
+}
+.ls-tip {
+  font-size: 14px;
+  color: var(--text-sub);
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 8px 12px;
+  line-height: 1.65;
+  border: 1px solid var(--border);
+}
+.ls-tip strong { color: var(--tab-ink); }
+@media (max-width: 480px) {
+  .ls-grid { grid-template-columns: 1fr; }
+}
+
+/* ════════════════════════════════════════
+   ACCORDION SECTIONS
+   ════════════════════════════════════════ */
+.accord {
+  border: 1px solid var(--border);
+  border-radius: var(--accord-r);
+  margin-bottom: 10px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.accord summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  border-left: 4px solid transparent;
+}
+.accord summary::-webkit-details-marker { display: none; }
+
+.accord[open] summary { border-bottom: 1px solid var(--border); }
+
+/* color themes per section type */
+.accord.vocab   summary { border-left-color: var(--vocab-bar); }
+.accord.gram    summary { border-left-color: var(--gram-bar);  }
+.accord.phrase  summary { border-left-color: var(--phrase-bar);}
+.accord.ext     summary { border-left-color: var(--ext-bar);   }
+.accord.fb      summary { border-left-color: var(--fb-bar);    }
+.accord.hw      summary { border-left-color: var(--hw-bar);    }
+
+.sec-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.sec-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  flex: 1;
+}
+.accord.vocab  .sec-label { color: var(--vocab-bar); }
+.accord.gram   .sec-label { color: var(--gram-bar);  }
+.accord.phrase .sec-label { color: var(--phrase-bar);}
+.accord.ext    .sec-label { color: var(--ext-bar);   }
+.accord.fb     .sec-label { color: var(--fb-bar);    }
+.accord.hw     .sec-label { color: var(--hw-bar);    }
+
+.accord-chevron {
+  font-size: 13px;
+  color: var(--text-hint);
+  transition: transform 0.2s;
+}
+.accord[open] .accord-chevron { transform: rotate(90deg); }
+
+.accord-body { padding: 16px 18px 18px; }
+
+/* ════════════════════════════════════════
+   VOCAB ITEMS
+   ════════════════════════════════════════ */
+.vocab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+.v-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  background: var(--vocab-bg);
+  border-radius: 6px;
+}
+.v-jp   { font-family: 'Noto Serif JP', serif; font-size: 17px; font-weight: 600; color: var(--vocab-fg); line-height: 1.35; }
+.v-read { font-size: 13px; color: var(--text-hint); }
+.v-def  { font-size: 14px; color: var(--text-sub); margin-top: 2px; }
+
+/* ════════════════════════════════════════
+   GRAMMAR ITEMS
+   ════════════════════════════════════════ */
+.gram-list { display: flex; flex-direction: column; gap: 16px; }
+.g-item { border-left: 3px solid var(--gram-bar); padding-left: 12px; }
+.g-pattern { font-family: 'Noto Serif JP', serif; font-size: 16px; font-weight: 600; color: var(--gram-fg); margin-bottom: 3px; }
+.g-meaning  { font-size: 14px; color: var(--text-sub); margin-bottom: 6px; }
+.g-example  { font-size: 15px; background: var(--gram-bg); padding: 8px 12px; border-radius: 5px; line-height: 1.6; }
+.g-en       { font-size: 13px; color: var(--text-hint); margin-top: 3px; }
+
+/* ════════════════════════════════════════
+   PHRASE ITEMS
+   ════════════════════════════════════════ */
+.phrase-list { display: flex; flex-direction: column; gap: 8px; }
+.p-item { padding: 10px 14px; background: var(--phrase-bg); border-radius: 6px; }
+.p-jp   { font-family: 'Noto Serif JP', serif; font-size: 16px; font-weight: 600; color: var(--phrase-fg); margin-bottom: 2px; }
+.p-note { font-size: 14px; color: var(--text-sub); }
+
+/* ════════════════════════════════════════
+   EXTENDED / CULTURAL
+   ════════════════════════════════════════ */
+.ext-list { display: flex; flex-direction: column; gap: 8px; }
+.e-item { padding: 10px 14px; background: var(--ext-bg); border-radius: 6px; }
+.e-title { font-size: 15px; font-weight: 700; color: var(--ext-fg); margin-bottom: 3px; }
+.e-body  { font-size: 14px; color: var(--text-sub); line-height: 1.65; }
+
+/* ════════════════════════════════════════
+   TEACHER FEEDBACK
+   ════════════════════════════════════════ */
+.fb-list { display: flex; flex-direction: column; gap: 10px; }
+.fb-block { background: var(--fb-bg); border-radius: 6px; padding: 12px 14px; }
+.fb-head  { font-size: 14px; font-weight: 700; color: var(--fb-fg); margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
+.fb-body  { font-size: 15px; color: var(--text-sub); line-height: 1.7; }
+.fb-body li { margin-left: 16px; margin-top: 3px; }
+
+/* ════════════════════════════════════════
+   HOMEWORK
+   ════════════════════════════════════════ */
+.hw-list { display: flex; flex-direction: column; gap: 8px; }
+.hw-item { background: var(--hw-bg); border-radius: 6px; padding: 10px 14px; }
+.hw-label { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--hw-fg); margin-bottom: 4px; }
+.hw-body  { font-size: 15px; color: var(--text-sub); line-height: 1.65; }
+.hw-ex    { font-family: 'Noto Serif JP', serif; font-size: 15px; background: var(--surface2); border-radius: 4px; padding: 6px 10px; margin-top: 6px; color: var(--text); }
+
+/* slang box */
+.slang-box { background: var(--phrase-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.slang-word { font-family: 'Noto Serif JP', serif; font-size: 22px; font-weight: 700; color: var(--phrase-bar); margin-bottom: 4px; }
+.slang-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.slang-chip { font-size: 14px; padding: 3px 10px; border-radius: 20px; background: var(--surface2); color: var(--text-sub); border: 1px solid var(--border); }
+
+/* section divider */
+.sdivider { height: 1px; background: var(--border); margin: 10px 0; }
+
+/* responsive */
+@media (max-width: 580px) {
+  .vocab-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 360px) {
+  .vocab-grid { grid-template-columns: 1fr; }
+}
+
+/* ════════════════════════════════════════
+   VIEW SWITCHER (頁籤導航)
+   ════════════════════════════════════════ */
+.view-nav {
+  max-width: 860px;
+  margin: 0 auto 22px;
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+}
+.view-btn {
+  padding: 10px 22px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: none;
+  background: none;
+  color: var(--text-sub);
+  cursor: pointer;
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.view-btn:hover { color: var(--text); }
+.view-btn.active { color: var(--tab-ink); border-bottom-color: var(--tab-ink); }
+
+.view { display: none; }
+.view.active { display: block; }
+
+/* ════════════════════════════════════════
+   FLASHCARD — FILTER ROW
+   ════════════════════════════════════════ */
+.card-section {
+  max-width: 860px;
+  margin: 0 auto;
+}
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 22px;
+}
+.filter-btn {
+  padding: 5px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.filter-btn:hover { border-color: var(--tab-ink); color: var(--tab-ink); }
+.filter-btn.active { background: var(--tab-ink); border-color: var(--tab-ink); color: #fff; }
+
+.card-count {
+  font-size: 14px;
+  color: var(--text-hint);
+  margin-bottom: 14px;
+}
+.card-count strong { color: var(--tab-ink); }
+
+.card-stage {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 24px;
+}
+
+/* ════════════════════════════════════════
+   FLASHCARD — FLIP CARD
+   ════════════════════════════════════════ */
+.fc-wrap {
+  perspective: 900px;
+  width: 100%;
+  max-width: 520px;
+  height: 260px;
+  cursor: pointer;
+}
+.fc-wrap.fc-hidden { display: none; }
+
+.fc {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fc-wrap.flipped .fc { transform: rotateY(180deg); }
+
+.fc-front, .fc-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 22px 26px 18px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1.5px solid var(--border);
+}
+.fc-back { transform: rotateY(180deg); }
+
+/* vocab colors */
+.fc-v .fc-front { background: var(--vocab-bg); }
+.fc-v .fc-back  { background: var(--surface); }
+
+/* grammar colors */
+.fc-g .fc-front { background: var(--gram-bg); }
+.fc-g .fc-back  { background: var(--surface); }
+
+/* front */
+.fc-badge {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-hint);
+  margin-bottom: 8px;
+  text-align: center;
+}
+.fc-word {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--vocab-fg);
+  line-height: 1.35;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fc-gword {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gram-fg);
+  line-height: 1.5;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.fc-tap {
+  font-size: 12px;
+  color: var(--text-hint);
+  text-align: right;
+  margin-top: 6px;
+}
+
+/* back */
+.fc-reading {
+  font-size: 14px;
+  color: var(--text-hint);
+  margin-bottom: 2px;
+}
+.fc-def {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.fc-ex {
+  font-size: 14px;
+  background: var(--surface2);
+  border-radius: 5px;
+  padding: 7px 10px;
+  color: var(--text-sub);
+  line-height: 1.6;
+  flex: 1;
+}
+.fc-g-meaning {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.fc-g-ex {
+  font-size: 14px;
+  background: var(--gram-bg);
+  border-radius: 5px;
+  padding: 7px 10px;
+  color: var(--text-sub);
+  line-height: 1.6;
+  flex: 1;
+}
+.fc-flip-hint {
+  font-size: 12px;
+  color: var(--text-hint);
+  margin-top: 6px;
+}
+
+/* shuffle button */
+.fc-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.shuffle-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.shuffle-btn:hover { border-color: var(--tab-ink); color: var(--tab-ink); }
+
+/* ── Study Mode ── */
+.study-toolbar { margin-bottom: 20px; }
+.study-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+.card-counter {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-sub);
+}
+.card-audio-hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 8px;
+}
+.filter-sep { color: var(--border); font-size: 16px; margin: 0 2px; align-self: center; user-select: none; }
+.fc-exzh { font-size: 13px; color: var(--text-hint); margin-top: 3px; font-style: italic; line-height: 1.4; }
+.audio-btn {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface2);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.audio-btn:hover { border-color: var(--tab-ink); color: var(--tab-ink); }
+.study-nav {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+.nav-btn {
+  padding: 10px 32px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 2px solid var(--border);
+  border-radius: 24px;
+  background: var(--surface);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.nav-btn:hover { border-color: var(--tab-ink); color: var(--tab-ink); }
+.nav-btn.primary { background: var(--tab-ink); border-color: var(--tab-ink); color: #fff; }
+.nav-btn.primary:hover { opacity: 0.88; }
+@media (max-width: 500px) {
+  .fc-wrap { height: 220px; }
+  .fc-word { font-size: 28px; }
+  .fc-gword { font-size: 18px; }
+  .nav-btn { padding: 9px 22px; font-size: 15px; }
+}
